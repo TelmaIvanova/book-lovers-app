@@ -1,23 +1,25 @@
-import './App.css';
+import { Route } from 'react-router-dom';
+import { Routes } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import Home from './pages/Home';
+import Books from './pages/Books';
+import AddBook from './pages/AddBooks';
+import Login from './pages/Login';
+import Register from './pages/Registration';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+const App = () => (
+  <>
+    <Navbar />
+    <div className='container mt-4'>
+      <Routes>
+        <Route path='/' element={<Home />} />
+        <Route path='/books' element={<Books />} />
+        <Route path='/add-book' element={<AddBook />} />
+        <Route path='/login' element={<Login />} />
+        <Route path='/register' element={<Register />} />
+      </Routes>
     </div>
-  );
-}
+  </>
+);
 
 export default App;
