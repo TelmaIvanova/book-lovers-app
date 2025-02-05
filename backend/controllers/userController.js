@@ -1,8 +1,19 @@
-exports.getAllUsers = (req, res) => {
+const User = require('./../models/userModel');
+const catchAsync = require('../utils/catchAsync');
+const APIFeatures = require('./../utils/APIFeatures');
+
+exports.getAllUsers = catchAsync(async (req, res, next) => {
+  const features = new APIFeatures(User.find(), req.query).filter().paginate();
+  const users = await features.query;
+
   res.status(200).json({
-    message: 'success!',
+    results: users.length,
+    data: {
+      users,
+    },
+    message: 'success',
   });
-};
+});
 
 exports.getUser = (req, res) => {
   res.status(200).json({
@@ -12,7 +23,7 @@ exports.getUser = (req, res) => {
 
 exports.createUser = (req, res) => {
   res.status(201).json({
-    status: 'Success',
+    status: 'success',
   });
 };
 
