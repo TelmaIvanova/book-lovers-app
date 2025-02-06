@@ -13,14 +13,14 @@ router
     authController.restrictTo('admin'),
     userController.getAllUsers
   )
-  .post(userController.createUser);
+  .post(authController.protect,
+    authController.restrictTo('admin'), userController.createUser);
 router
   .route('/:id')
-  .get(userController.getUser)
-  .patch(userController.updateUser)
+  .get(authController.protect, userController.getUser)
+  .patch(authController.protect, userController.updateUser)
   .delete(
     authController.protect,
-    authController.restrictTo('admin'),
     userController.deleteUser
   );
 

@@ -23,13 +23,13 @@ const Books = () => {
       </div>
       <div className='row'>
         {books.map((book) => (
-          <div className='col-md-4 mb-4' key={book.id}>
+          <div className='col-md-4 mb-4' key={book._id}>
             <div className='card'>
               <div className='card-body'>
                 <h5 className='card-title'>{book.title}</h5>
                 <p className='card-text'>Genre: {book.genre}</p>
                 <p className='card-text'>Rating: {book.rating}</p>
-                <Link to={`/books/${book.id}`} className='btn btn-secondary'>
+                <Link to={`/books/${book._id}`} className='btn btn-secondary'>
                   View Details
                 </Link>
               </div>

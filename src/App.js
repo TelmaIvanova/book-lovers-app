@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Books from './pages/Books';
+import BookDetails from './pages/BookDetails';
 import AddBook from './pages/AddBooks';
 import Login from './pages/Login';
 import Register from './pages/Registration';
@@ -13,6 +14,7 @@ const App = () => (
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/books' element={<Books />} />
+        <Route path='/books/:id' element={<BookDetails />} />
         <Route path='/add-book' element={<AddBook />} />
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />

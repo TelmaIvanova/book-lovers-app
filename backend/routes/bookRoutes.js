@@ -3,11 +3,18 @@ const bookController = require('./../controllers/bookController');
 const authController = require('./../controllers/authController');
 const router = express.Router();
 
-router.route('/').get(bookController.getAllBooks).post(bookController.addBook);
+router
+  .route('/')
+  .get(bookController.getAllBooks)
+  .post(authController.protect, bookController.addBook);
 router
   .route('/:id')
   .get(bookController.getBook)
-  .patch(bookController.updateBook)
+  .patch(
+    authController.protect,
+    authController.restrictTo('admin'),
+    bookController.updateBook
+  )
   .delete(
     authController.protect,
     authController.restrictTo('admin'),
