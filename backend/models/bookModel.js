@@ -31,7 +31,6 @@ const bookSchema = new mongoose.Schema({
   },
   imageCover: {
     type: String,
-    //required: [true, 'A book must contain a cover image!'],
   },
   genre: {
     type: String,
@@ -42,7 +41,13 @@ const bookSchema = new mongoose.Schema({
     required: [true, 'A book must contain a summary!'],
   },
   comment: String,
-  rating: Number,
+  rating: { type: Number, default: 0 },
+  r1: { type: Number, default: 0 },
+  r2: { type: Number, default: 0 },
+  r3: { type: Number, default: 0 },
+  r4: { type: Number, default: 0 },
+  r5: { type: Number, default: 0 },
+  votes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
 });
 
 const Book = mongoose.model('Book', bookSchema);

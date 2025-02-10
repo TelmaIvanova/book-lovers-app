@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-
 import { useNavigate } from 'react-router-dom';
 
 const AddBook = () => {
@@ -129,12 +128,11 @@ const AddBook = () => {
           ></textarea>
         </div>
         <div className='mb-3'>
-          <label className='form-label'>Comment</label>
+          <label className='form-label'>Comment (optional)</label>
           <textarea
             className='form-control'
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            required
           ></textarea>
         </div>
         <div className='mb-3'>
@@ -146,7 +144,6 @@ const AddBook = () => {
             onChange={(e) => setRating(e.target.value)}
             min='1'
             max='5'
-            required
           />
         </div>
         <button type='submit' className='btn btn-primary'>

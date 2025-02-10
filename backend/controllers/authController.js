@@ -77,3 +77,61 @@ exports.restrictTo = (...roles) => {
     next();
   };
 };
+
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  let user = await User.findById(req.user.id).select('+password');
+  if (
+    !(await user.isPasswordCorrect(req.body.currentPassword, user.password))
+  ) {
+    return next(new AppError('Incorrect password!', 401));
+  }
+  user.password = req.body.newPassword;
+  user.passwordConfirm = req.body.confirmPassword;
+  await user.save();
+
+  res.status(200).json({
+    status: 'success',
+  });
+});
+
+exports.deleteMyAccount = catchAsync(async (req, res, next) => {
+  let user = await User.findById(req.user.id).select('+password');
+  const { password } = req.body;
+
+  if (!password) {
+    return next(new AppError('You must enter your password!', 400));
+  }
+
+  if (!(await user.isPasswordCorrect(password, user.password))) {
+    return next(new AppError('Incorrect password!', 401));
+  }
+
+  await user.deleteOne();
+  res.status(204).json({
+    status: 'success',
+    data: null,
+  });
+});
+
+exports.deleteUser = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+  await User.findByIdAndDelete(id);
+  res.status(204).json({
+    status: 'success',
+    data: null,
+  });
+});
+
+exports.changeUserPassword = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+
+  let user = await User.findById(id);
+
+  user.password = req.body.newPassword;
+  user.passwordConfirm = req.body.newPassword;
+  await user.save();
+
+  res.status(200).json({
+    status: 'success',
+  });
+});

@@ -12,7 +12,6 @@ router
   .get(bookController.getBook)
   .patch(
     authController.protect,
-    authController.restrictTo('admin'),
     bookController.updateBook
   )
   .delete(
@@ -20,5 +19,6 @@ router
     authController.restrictTo('admin'),
     bookController.deleteBook
   );
+  router.patch('/:id/rate', authController.protect, bookController.rateBook);
 
 module.exports = router;

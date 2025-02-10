@@ -4,19 +4,31 @@ import { useNavigate, Link } from 'react-router-dom';
 
 const Login = () => {
   const { login } = useAuth();
-  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await login(email, password);
-    navigate('/');
+    setError(null);
+
+    try {
+      await login(email, password);
+      navigate('/');
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError('Incorrect email/password!');
+      }
+    }
   };
 
   return (
     <div className='container mt-4'>
       <h1>Login</h1>
+      {error && <p className='text-danger'>{error}</p>}
       <form onSubmit={handleSubmit}>
         <div className='mb-3'>
           <label htmlFor='email' className='form-label'>
