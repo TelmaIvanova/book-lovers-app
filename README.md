@@ -12,14 +12,18 @@ To install the project dependencies, follow these steps:
 
 `git clone https://github.com/TelmaIvanova/book-lovers-app.git`
 
-**Navigate into the project directory:**
+**Navigate to the BE directory:**
 
-`cd book-lovers-app`
+`cd book-lovers-app/backend`
 
 **Install the project dependencies:**
 
 `npm install`
 
-**After installation, you can start the project:**
+**After installation, you should start the server in one terminal:**
+
+`npm start`
+
+**and in another terminal start React App in the main book-lovers-app directory**
 
 `npm start`
