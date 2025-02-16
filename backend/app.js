@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-require('dotenv').config({ path: 'config.env' });
+require('dotenv').config({ path: '.env' });
 const CONNECTION = process.env.CONNECTION;
 const AppError = require('./utils/appError');
 const errorHandler = require('./controllers/errorController');
