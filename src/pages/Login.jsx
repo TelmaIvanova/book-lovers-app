@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 
 const Login = () => {
-  const { login } = useAuth();
+  const { login, loginWithEthereum } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
@@ -21,6 +21,22 @@ const Login = () => {
         setError(err.response.data.message);
       } else {
         setError('Incorrect email/password!');
+      }
+    }
+  };
+
+  const handleEthereumLogin = async (e) => {
+    e.preventDefault();
+    setError(null);
+
+    try {
+      await loginWithEthereum();
+      navigate('/');
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError('MetaMask extension is not installed.');
       }
     }
   };
@@ -69,6 +85,16 @@ const Login = () => {
           Login
         </button>
       </form>
+      <div className='mt-3'>
+        <p>or</p>
+      </div>
+      <button
+        onClick={handleEthereumLogin}
+        type='button'
+        className='btn btn-primary'
+      >
+        Login with Ethereum
+      </button>
     </div>
   );
 };

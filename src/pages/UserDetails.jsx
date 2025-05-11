@@ -63,10 +63,11 @@ const UserDetails = () => {
       .then((updatedData) => {
         setUser((prevUser) => ({
           ...prevUser,
-          [field]: updatedData.data[field],
+          [field]: updatedData.data.user[field],
         }));
+        alert(`${field} updated successfully!`);
       })
-      .catch((error) => console.error('Error updating user:', error));
+      .catch((error) => alert(`Failed to update ${field}.`));
   };
 
   const handleDelete = () => {
@@ -103,7 +104,7 @@ const UserDetails = () => {
       id: currentUser?.id,
     });
 
-    fetch(`/api/users/changeUserPassword`, {
+    fetch(`/api/users/changePassword/${id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -111,9 +112,7 @@ const UserDetails = () => {
         'User-Role': currentUser?.role,
       },
       body: JSON.stringify({
-        newPassword: newPassword,
-        confirmPassword: newPassword,
-        id: currentUser?.id,
+        newPassword,
       }),
     })
       .then((response) => response.json())
@@ -178,6 +177,20 @@ const UserDetails = () => {
           <p className='card-text'>
             <strong>Role:</strong> {user.role}
           </p>
+          <select
+            className='form-select'
+            id='role'
+            name='role'
+            value={editedUser.role}
+            onChange={(e) => {
+              setEditedUser({ ...editedUser, role: e.target.value });
+              handleBlur('role', e.target.value);
+            }}
+          >
+            <option value='reader'>Reader</option>
+            <option value='admin'>Admin</option>
+          </select>
+
           <p className='card-text'>
             <strong>New Password:</strong>
             <input

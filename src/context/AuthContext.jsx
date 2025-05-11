@@ -1,5 +1,4 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -49,6 +48,18 @@ export const AuthProvider = ({ children }) => {
     return data;
   };
 
+  const getNonce = async () => {
+    const response = await fetch('/api/nonce');
+    const data = await response.json();
+    return data.data;
+  };
+
+  const signMessage = async () => {
+    const nonce = await getNonce();
+
+    // const provider = new ethers.providers.Web5Provider(window.ethereum);
+  };
+
   const register = async (formData) => {
     try {
       const res = await fetch('/api/users/signup', {
@@ -75,7 +86,7 @@ export const AuthProvider = ({ children }) => {
 
   const deleteAccount = async (password) => {
     try {
-      const response = await fetch('/api/users/deleteMyAccount', {
+      const response = await fetch('/api/users/deleteAccount', {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -139,7 +150,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
- const voteBook = async (id, rating, token) => {
+  const voteBook = async (id, rating, token) => {
     try {
       const res = await fetch(`/api/books/${id}/vote`, {
         method: 'PATCH',
@@ -149,16 +160,15 @@ export const AuthProvider = ({ children }) => {
         },
         body: JSON.stringify({ rating }),
       });
-  
+
       if (!res.ok) throw new Error('Failed to vote for book');
-  
+
       return await res.json();
     } catch (error) {
       console.error('Error voting for book:', error);
       throw error;
     }
   };
-  
 
   return (
     <AuthContext.Provider
@@ -166,6 +176,7 @@ export const AuthProvider = ({ children }) => {
         token,
         user,
         login,
+        loginWithEthereum: getNonce,
         logout,
         register,
         deleteAccount,

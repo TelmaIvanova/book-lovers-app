@@ -79,7 +79,7 @@ const Profile = () => {
     }
 
     try {
-      const response = await fetch('/api/users/updateMyPassword', {
+      const response = await fetch('/api/users/updatePassword', {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

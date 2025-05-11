@@ -1,5 +1,6 @@
 const User = require('./../models/userModel');
 const { promisify } = require('util');
+const { randomBytes } = require('crypto');
 const jwt = require('jsonwebtoken');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
@@ -50,6 +51,14 @@ exports.login = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.loginWithEthereum = catchAsync(async (req, res, next) => {
+  const nonce = randomBytes(32).toString('hex');
+  res.status(200).json({
+    status: 'success',
+    data: nonce,
+  });
+});
+
 exports.protect = catchAsync(async (req, res, next) => {
   let token;
   if (
@@ -94,7 +103,7 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.deleteMyAccount = catchAsync(async (req, res, next) => {
+exports.deleteAccount = catchAsync(async (req, res, next) => {
   let user = await User.findById(req.user.id).select('+password');
   const { password } = req.body;
 
@@ -122,9 +131,8 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.changeUserPassword = catchAsync(async (req, res, next) => {
+exports.changePassword = catchAsync(async (req, res, next) => {
   const { id } = req.params;
-
   let user = await User.findById(id);
 
   user.password = req.body.newPassword;

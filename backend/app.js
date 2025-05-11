@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const ethers = require('ethers');
 require('dotenv').config({ path: '.env' });
 const CONNECTION = process.env.CONNECTION;
 const AppError = require('./utils/appError');
@@ -11,9 +12,11 @@ const bookRouter = require('./routes/bookRoutes');
 const userRouter = require('./routes/userRoutes');
 const genreRouter = require('./routes/genreRoutes');
 const discussionRouter = require('./routes/discussionRoutes');
+const { loginWithEthereum } = require('./controllers/authController');
 
 app.use('/api/books', bookRouter);
 app.use('/api/users', userRouter);
+app.use('/api/nonce', loginWithEthereum);
 app.use('/api/genres', genreRouter);
 app.use('/api/discussions', discussionRouter);
 app.use(express.static(`${__dirname}/public`));

@@ -6,14 +6,14 @@ const router = express.Router();
 router.post('/signup', authController.signup);
 router.post('/login', authController.login);
 router.patch(
-  '/updateMyPassword',
+  '/updatePassword',
   authController.protect,
   authController.updatePassword
 );
 router.delete(
-  '/deleteMyAccount',
+  '/deleteAccount',
   authController.protect,
-  authController.deleteMyAccount
+  authController.deleteAccount
 );
 
 router.delete(
@@ -22,6 +22,8 @@ router.delete(
   authController.restrictTo('admin'),
   authController.deleteUser
 );
+
+router.get('/nonce', authController.loginWithEthereum)
 
 router
   .route('/')
@@ -42,13 +44,14 @@ router
   .patch(authController.protect, userController.updateUser);
 
 router.patch(
-  '/changeUserPassword',
+  '/changePassword/:id',
   authController.protect,
   authController.restrictTo('admin'),
-  authController.changeUserPassword
+  authController.changePassword
 );
 
 router.route('/:id').get(authController.protect, userController.getUserById);
+
 router.post(
   '/create',
   authController.protect,
