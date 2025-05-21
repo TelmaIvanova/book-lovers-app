@@ -23,7 +23,8 @@ router.delete(
   authController.deleteUser
 );
 
-router.get('/nonce', authController.loginWithEthereum)
+router.get('/api/nonce', authController.nonce);
+router.post('/api/verify', authController.verify);
 
 router
   .route('/')

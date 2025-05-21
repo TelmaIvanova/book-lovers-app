@@ -1,9 +1,16 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import { BrowserProvider } from 'ethers';
+import { SiweMessage } from 'siwe';
+
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('token') || null);
   const [user, setUser] = useState(null);
+  const provider = new BrowserProvider(window.ethereum);
+  const domain = window.location.host;
+  const setAddress = useState();
+  const [signer, setSigner] = useState(null);
 
   useEffect(() => {
     if (token) {
@@ -48,16 +55,51 @@ export const AuthProvider = ({ children }) => {
     return data;
   };
 
-  const getNonce = async () => {
-    const response = await fetch('/api/nonce');
-    const data = await response.json();
-    return data.data;
+  const connectWallet = async () => {
+    const accounts = await provider
+      .send('eth_requestAccounts', [])
+      .catch(() => console.log('user rejected request'));
+    if (accounts[0]) {
+      setAddress(accounts[0]);
+    }
   };
 
-  const signMessage = async () => {
-    const nonce = await getNonce();
+  const loginWithEthereum = async () => {
+    //Get nonce
+    const res = await fetch('/api/nonce');
+    const data = await res.json();
 
-    // const provider = new ethers.providers.Web5Provider(window.ethereum);
+    //Create message
+    const messageRaw = new SiweMessage({
+      domain,
+      address: await signer.getAddress(),
+      statement: 'Sign in with Ethereum to the app.',
+      uri: window.location.origin,
+      version: '1',
+      chainId: '1',
+      nonce: data,
+    });
+
+    const message = messageRaw.prepareMessage();
+
+    //Get signature
+    const signature = await signer.signMessage(message);
+
+    //Send to server
+    const res2 = await fetch('/api/verify', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ message, signature }),
+    });
+    console.log(res2);
+    //const signer = await provider.getSigner();
+    // const message = createSiweMessage(
+    //     signer.address,
+    //     'Sign in with Ethereum to the app.'
+    //   );
+    // console.log(await signer.signMessage(message));
   };
 
   const register = async (formData) => {
@@ -176,7 +218,8 @@ export const AuthProvider = ({ children }) => {
         token,
         user,
         login,
-        loginWithEthereum: getNonce,
+        loginWithEthereum,
+        connectWallet,
         logout,
         register,
         deleteAccount,

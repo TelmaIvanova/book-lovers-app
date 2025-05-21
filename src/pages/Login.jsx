@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 
 const Login = () => {
-  const { login, loginWithEthereum } = useAuth();
+  const { login, connectWallet, loginWithEthereum }  = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
@@ -25,21 +25,9 @@ const Login = () => {
     }
   };
 
-  const handleEthereumLogin = async (e) => {
-    e.preventDefault();
-    setError(null);
-
-    try {
-      await loginWithEthereum();
-      navigate('/');
-    } catch (err) {
-      if (err.response && err.response.data && err.response.data.message) {
-        setError(err.response.data.message);
-      } else {
-        setError('MetaMask extension is not installed.');
-      }
-    }
-  };
+  const handleEthereumLogin = () => {
+    connectWallet();
+  }
 
   return (
     <div className='container mt-4'>
@@ -88,13 +76,29 @@ const Login = () => {
       <div className='mt-3'>
         <p>or</p>
       </div>
-      <button
-        onClick={handleEthereumLogin}
+      <div>
+        {handleEthereumLogin.address === '' ? (
+          <>
+          <button
+        onClick={loginWithEthereum}
         type='button'
         className='btn btn-primary'
-      >
+      > 
+        Login
+      </button>
+          </>
+        ) : (
+          <>
+          <button
+        onClick={connectWallet}
+        type='button'
+        className='btn btn-primary'
+      > 
         Login with Ethereum
       </button>
+          </>
+        )}
+      </div>
     </div>
   );
 };
