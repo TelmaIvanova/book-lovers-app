@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const Home = () => (
   <div className='home-page'>
-    <section className='intro py-5 text-center bg-light'>
+    <section className='intro py-5 text-center'>
       <div className='container'>
         <h1 className='display-4'>Welcome to the Book Lovers app!</h1>
         <p className='lead mt-3'>
@@ -12,7 +12,7 @@ const Home = () => (
           Lovers app is here to make your book discovery journey easier and more
           enjoyable!
         </p>
-        <ul className='list-unstyled mt-4'>
+        <ul className='list-unstyled mt-4 text-start d-inline-block'>
           <li> ✔️ Explore book reviews and ratings.</li>
           <li> ✔️ Discover books by genre.</li>
           <li> ✔️ Share your thoughts by writing reviews and comments.</li>

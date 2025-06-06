@@ -9,8 +9,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const provider = new BrowserProvider(window.ethereum);
   const domain = window.location.host;
-  const setAddress = useState();
-  const [signer, setSigner] = useState(null);
+  let [address, setAddress] = useState('');
 
   useEffect(() => {
     if (token) {
@@ -58,16 +57,20 @@ export const AuthProvider = ({ children }) => {
   const connectWallet = async () => {
     const accounts = await provider
       .send('eth_requestAccounts', [])
-      .catch(() => console.log('user rejected request'));
+      .catch(() => console.log('User rejected request'));
+
+    console.log(accounts);
     if (accounts[0]) {
       setAddress(accounts[0]);
     }
   };
 
   const loginWithEthereum = async () => {
+    const signer = await provider.getSigner();
+
     //Get nonce
-    const res = await fetch('/api/nonce');
-    const data = await res.json();
+    const res = await fetch('/api/users/nonce');
+    const data = await res.text();
 
     //Create message
     const messageRaw = new SiweMessage({
@@ -76,7 +79,7 @@ export const AuthProvider = ({ children }) => {
       statement: 'Sign in with Ethereum to the app.',
       uri: window.location.origin,
       version: '1',
-      chainId: '1',
+      chainId: 1,
       nonce: data,
     });
 
@@ -86,20 +89,13 @@ export const AuthProvider = ({ children }) => {
     const signature = await signer.signMessage(message);
 
     //Send to server
-    const res2 = await fetch('/api/verify', {
+    const res2 = await fetch('/api/users/verify', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ message, signature }),
     });
-    console.log(res2);
-    //const signer = await provider.getSigner();
-    // const message = createSiweMessage(
-    //     signer.address,
-    //     'Sign in with Ethereum to the app.'
-    //   );
-    // console.log(await signer.signMessage(message));
   };
 
   const register = async (formData) => {
@@ -220,6 +216,7 @@ export const AuthProvider = ({ children }) => {
         login,
         loginWithEthereum,
         connectWallet,
+        address,
         logout,
         register,
         deleteAccount,

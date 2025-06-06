@@ -1,4 +1,4 @@
-import React from 'react';
+import DarkModeToggle from '../components/DarkModeToggle';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
@@ -86,6 +86,7 @@ const Navbar = () => {
             )}
           </ul>
         </div>
+        <DarkModeToggle />
       </div>
     </nav>
   );

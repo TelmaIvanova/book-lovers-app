@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 
 const Login = () => {
-  const { login, connectWallet, loginWithEthereum }  = useAuth();
+  const { login, connectWallet, loginWithEthereum, address }  = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
@@ -24,10 +24,6 @@ const Login = () => {
       }
     }
   };
-
-  const handleEthereumLogin = () => {
-    connectWallet();
-  }
 
   return (
     <div className='container mt-4'>
@@ -77,20 +73,20 @@ const Login = () => {
         <p>or</p>
       </div>
       <div>
-        {handleEthereumLogin.address === '' ? (
+        {address === '' ? (
           <>
           <button
-        onClick={loginWithEthereum}
+        onClick={connectWallet}
         type='button'
         className='btn btn-primary'
       > 
-        Login
+        Connect wallet
       </button>
           </>
         ) : (
           <>
           <button
-        onClick={connectWallet}
+        onClick={loginWithEthereum}
         type='button'
         className='btn btn-primary'
       > 
