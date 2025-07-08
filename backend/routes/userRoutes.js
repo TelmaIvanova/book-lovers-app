@@ -23,9 +23,6 @@ router.delete(
   authController.deleteUser
 );
 
-router.get('/nonce', authController.nonce);
-router.post('/verify', authController.verify);
-
 router
   .route('/')
   .get(

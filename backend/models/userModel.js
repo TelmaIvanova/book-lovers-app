@@ -30,6 +30,52 @@ const userSchema = new mongoose.Schema({
     enum: ['reader', 'admin'],
     default: 'reader',
   },
+  userType: {
+    type: String,
+    default: 'regular',
+    immutable: true,
+  },
+});
+
+const ethereumUserSchema = new mongoose.Schema({
+  ethereumAddress: {
+    type: String,
+    required: true,
+    unique: true,
+    lowercase: true,
+  },
+  email: {
+    type: String,
+    unique: true,
+    lowercase: true,
+    trim: true,
+  },
+  username: {
+    type: String,
+    unique: true,
+    trim: true,
+    minlength: 3,
+    maxlength: 15,
+  },
+  firstName: {
+    type: String,
+    trim: true,
+  },
+  lastName: {
+    type: String,
+    trim: true,
+  },
+  role: {
+    type: String,
+    enum: ['reader'],
+    default: 'reader',
+    immutable: true,
+  },
+  userType: {
+    type: String,
+    default: 'ethereum',
+    immutable: true,
+  },
 });
 
 userSchema.methods.isPasswordCorrect = async function (
@@ -47,4 +93,8 @@ userSchema.pre('save', async function (next) {
 });
 
 const User = mongoose.model('User', userSchema);
-module.exports = User;
+const EthereumUser = mongoose.model('EthereumUser', ethereumUserSchema);
+module.exports = {
+  User,
+  EthereumUser,
+};

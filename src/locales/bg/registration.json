@@ -1,0 +1,13 @@
+{
+  "title": "Регистрация ‧ Book Lovers",
+  "heading": "Регистрация",
+  "form": {
+    "firstName": "Име",
+    "lastName": "Фамилия",
+    "email": "Имейл",
+    "password": "Парола",
+    "passwordConfirm": "Потвърди паролата",
+    "submit": "Регистрирай се"
+  },
+  "alreadyHaveProfile": "Вече имаш профил? Влез оттук!"
+}

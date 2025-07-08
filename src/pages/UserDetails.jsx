@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
+import { Helmet } from 'react-helmet';
 
 const UserDetails = () => {
+  const { t } = useTranslation('userDetails');
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
   const [editedUser, setEditedUser] = useState({
@@ -18,7 +21,7 @@ const UserDetails = () => {
 
   useEffect(() => {
     if (!token) {
-      console.error('No token available');
+      console.error(t('error.noToken'));
       return;
     }
 
@@ -39,14 +42,14 @@ const UserDetails = () => {
             role: data.data.user.role || '',
           });
         } else {
-          setError('User not found');
+          setError(t('error.notFound'));
         }
       })
       .catch((error) => {
-        console.error('Error fetching user details:', error);
-        setError('Failed to load user details');
+        console.error(t('error.fetch'), error);
+        setError(t('error.fetch'));
       });
-  }, [id, token, currentUser?.role]);
+  }, [id, token, currentUser?.role, t]);
 
   const handleBlur = (field, value) => {
     setEditedUser((prev) => ({ ...prev, [field]: value }));
@@ -65,15 +68,13 @@ const UserDetails = () => {
           ...prevUser,
           [field]: updatedData.data.user[field],
         }));
-        alert(`${field} updated successfully!`);
+        alert(t('success.update', { field }));
       })
-      .catch((error) => alert(`Failed to update ${field}.`));
+      .catch(() => alert(t('error.update')));
   };
 
   const handleDelete = () => {
-    const confirmation = window.confirm(
-      'Are you sure you want to delete this user?'
-    );
+    const confirmation = window.confirm(t('confirm.delete'));
     if (confirmation) {
       fetch(`/api/users/delete/${id}`, {
         method: 'DELETE',
@@ -86,10 +87,10 @@ const UserDetails = () => {
           if (response.ok) {
             navigate('/users');
           } else {
-            throw new Error('Failed to delete user');
+            throw new Error(t('error.delete'));
           }
         })
-        .catch((error) => console.error('Error deleting user:', error));
+        .catch((error) => console.error(t('error.delete'), error));
     }
   };
 
@@ -98,7 +99,7 @@ const UserDetails = () => {
   };
 
   const handlePasswordBlur = () => {
-    console.log('Sending request with:', {
+    console.log(t('log.sendingRequest'), {
       token,
       role: currentUser?.role,
       id: currentUser?.id,
@@ -118,14 +119,14 @@ const UserDetails = () => {
       .then((response) => response.json())
       .then((data) => {
         if (data.status === 'success') {
-          alert('Password updated successfully');
+          alert(t('success.password'));
         } else {
-          alert('Failed to update password');
+          alert(t('error.password'));
         }
       })
       .catch((error) => {
-        console.error('Error updating password:', error);
-        alert('Failed to update password');
+        console.error(t('error.password'), error);
+        alert(t('error.password'));
       });
   };
 
@@ -134,13 +135,18 @@ const UserDetails = () => {
   }
 
   if (!user) {
-    return <div>Loading...</div>;
+    return <div>{t('loading')}</div>;
   }
 
   return (
     <div className='container mt-4'>
-      <h1>User Details</h1>
-      <div className='card'>
+      <Helmet>
+        <title>
+          {t('title')} {editedUser.firstName} {editedUser.lastName}
+        </title>
+      </Helmet>
+      <h1>{t('heading')}</h1>
+      <div className='card p-4'>
         <div className='card-body'>
           <h5 className='card-title'>
             <input
@@ -151,6 +157,7 @@ const UserDetails = () => {
               }
               onBlur={(e) => handleBlur('firstName', e.target.value)}
               className='form-control mb-2'
+              placeholder={t('fields.firstName')}
             />
             <input
               type='text'
@@ -160,10 +167,11 @@ const UserDetails = () => {
               }
               onBlur={(e) => handleBlur('lastName', e.target.value)}
               className='form-control mb-2'
+              placeholder={t('fields.lastName')}
             />
           </h5>
           <p className='card-text'>
-            <strong>Email:</strong>
+            <strong>{t('fields.email')}:</strong>
             <input
               type='email'
               value={editedUser.email}
@@ -172,10 +180,14 @@ const UserDetails = () => {
               }
               onBlur={(e) => handleBlur('email', e.target.value)}
               className='form-control mb-2'
+              placeholder={t('fields.email')}
             />
           </p>
           <p className='card-text'>
-            <strong>Role:</strong> {user.role}
+            <strong>{t('fields.role')}:</strong>{' '}
+            {user.role === 'admin'
+              ? t('fields.roleOptions.admin')
+              : t('fields.roleOptions.reader')}
           </p>
           <select
             className='form-select'
@@ -187,31 +199,34 @@ const UserDetails = () => {
               handleBlur('role', e.target.value);
             }}
           >
-            <option value='reader'>Reader</option>
-            <option value='admin'>Admin</option>
+            <option value='reader'>{t('fields.roleOptions.reader')}</option>
+            <option value='admin'>{t('fields.roleOptions.admin')}</option>
           </select>
 
           <p className='card-text'>
-            <strong>New Password:</strong>
+            <strong>{t('fields.newPassword')}:</strong>
             <input
               type='password'
               value={newPassword}
               onChange={handlePasswordChange}
               onBlur={handlePasswordBlur}
               className='form-control mb-2'
+              placeholder={t('fields.newPassword')}
             />
           </p>
           <button className='btn btn-danger' onClick={handleDelete}>
-            Delete User
+            {t('buttons.delete')}
           </button>
+          <br />
           <button
             className='btn btn-secondary'
             onClick={() => navigate('/users')}
           >
-            Back to Users List
+            {t('buttons.back')}
           </button>
         </div>
       </div>
+      <br />
     </div>
   );
 };

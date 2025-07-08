@@ -1,0 +1,19 @@
+{
+  "title": "Login ‧ Book Lovers",
+  "heading": "Login",
+  "form": {
+    "email": "Email",
+    "password": "Password",
+    "submit": "Login",
+    "noProfile": "No profile? Register now!"
+  },
+  "or": "or",
+  "wallet": {
+    "connect": "Connect wallet",
+    "login": "Login with Ethereum"
+  },
+  "error": {
+    "default": "Incorrect email/password!",
+    "ethereum": "Ethereum login failed"
+  }
+}

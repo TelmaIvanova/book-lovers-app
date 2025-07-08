@@ -16,7 +16,13 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('token', token);
       const fetchUserData = async () => {
         try {
-          const response = await fetch('/api/users/profile', {
+          const type = localStorage.getItem('userType') || 'regular';
+          const endpoint =
+            type === 'ethereum'
+              ? '/api/ethereumUsers/ethereumProfile'
+              : '/api/users/profile';
+
+          const response = await fetch(endpoint, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
@@ -51,6 +57,10 @@ export const AuthProvider = ({ children }) => {
       throw new Error(data.message || 'Login failed');
     }
     setToken(data.token);
+    setToken(data.token);
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('userType', 'regular');
+
     return data;
   };
 
@@ -68,11 +78,15 @@ export const AuthProvider = ({ children }) => {
   const loginWithEthereum = async () => {
     const signer = await provider.getSigner();
 
-    //Get nonce
-    const res = await fetch('/api/users/nonce');
-    const data = await res.text();
+    // Get nonce and nonceToken from backend
+    const res = await fetch('/api/ethereumUsers/nonce');
+    if (!res.ok) throw new Error('Failed to fetch nonce');
+    const { nonce, nonceToken } = await res.json();
 
-    //Create message
+    localStorage.setItem('siwe-nonce', nonce);
+    localStorage.setItem('siwe-nonceToken', nonceToken);
+
+    // Create SIWE message
     const messageRaw = new SiweMessage({
       domain,
       address: await signer.getAddress(),
@@ -80,22 +94,35 @@ export const AuthProvider = ({ children }) => {
       uri: window.location.origin,
       version: '1',
       chainId: 1,
-      nonce: data,
+      nonce,
     });
 
     const message = messageRaw.prepareMessage();
 
-    //Get signature
+    // Get signature
     const signature = await signer.signMessage(message);
 
-    //Send to server
-    const res2 = await fetch('/api/users/verify', {
+    // Send message, signature and nonceToken to server
+    const res2 = await fetch('/api/ethereumUsers/verify', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ message, signature }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message,
+        signature,
+        nonceToken,
+      }),
     });
+
+    const data = await res2.json();
+
+    if (!res2.ok) {
+      throw new Error(data.message || 'Verification failed');
+    }
+
+    setToken(data.token);
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('userType', 'ethereum');
+    return data;
   };
 
   const register = async (formData) => {

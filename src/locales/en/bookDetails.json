@@ -1,0 +1,23 @@
+{
+  "loading": "Loading book details...",
+  "title": "Title",
+  "author": "Author",
+  "genre": "Genre",
+  "summary": "Summary",
+  "rating": "Rating",
+  "ratingEdit": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "alertInvalid": "Please provide a valid rating between 1 and 5.",
+    "success": "Rating updated successfully!",
+    "failure": "Failed to update rating",
+    "error": "An error occurred while updating the rating."
+  },
+  "ratingTip": "Not sure how to rate? Check our tips and tricks!",
+  "delete": {
+    "button": "Delete",
+    "confirm": "Are you sure you want to delete this book?",
+    "success": "Book deleted successfully!",
+    "failure": "Failed to delete the book."
+  }
+}

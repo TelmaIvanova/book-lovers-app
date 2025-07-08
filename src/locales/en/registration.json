@@ -1,0 +1,13 @@
+{
+  "title": "Register ‧ Book Lovers",
+  "heading": "Register",
+  "form": {
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "password": "Password",
+    "passwordConfirm": "Confirm Password",
+    "submit": "Register"
+  },
+  "alreadyHaveProfile": "Already have a profile? Login here!"
+}

@@ -1,7 +1,6 @@
-const User = require('./../models/userModel');
+const { User } = require('./../models/userModel');
 const catchAsync = require('../utils/catchAsync');
 const APIFeatures = require('./../utils/APIFeatures');
-const AppError = require('./../utils/appError');
 
 exports.getAllUsers = catchAsync(async (req, res, next) => {
   const features = new APIFeatures(User.find(), req.query).filter().paginate();
@@ -77,7 +76,7 @@ exports.createUser = catchAsync(async (req, res, next) => {
 });
 
 exports.updateUser = catchAsync(async (req, res) => {
-  const user = await User.findByIdAndUpdate(req.body.id, req.body, {
+  const user = await User.findByIdAndUpdate(req.user.id, req.body, {
     new: true,
     runValidators: true,
   });

@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { Helmet } from 'react-helmet';
 
 const AddBook = () => {
+  const { t } = useTranslation('addBook');
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [isbn, setIsbn] = useState('');
@@ -50,16 +53,19 @@ const AddBook = () => {
     if (res.ok) {
       navigate('/books');
     } else {
-      console.error('Error adding book');
+      console.error(t('error.addFailed'));
     }
   };
 
   return (
     <div className='container mt-4'>
-      <h1>Add new book</h1>
+      <Helmet>
+        <title>{t('title')}</title>
+      </Helmet>
+      <h1>{t('heading')}</h1>
       <form onSubmit={handleSubmit}>
         <div className='mb-3'>
-          <label className='form-label'>Title</label>
+          <label className='form-label'>{t('form.title')}</label>
           <input
             type='text'
             className='form-control'
@@ -69,7 +75,7 @@ const AddBook = () => {
           />
         </div>
         <div className='mb-3'>
-          <label className='form-label'>Author</label>
+          <label className='form-label'>{t('form.author')}</label>
           <input
             type='text'
             className='form-control'
@@ -79,7 +85,7 @@ const AddBook = () => {
           />
         </div>
         <div className='mb-3'>
-          <label className='form-label'>ISBN</label>
+          <label className='form-label'>{t('form.isbn')}</label>
           <input
             type='text'
             className='form-control'
@@ -89,7 +95,7 @@ const AddBook = () => {
           />
         </div>
         <div className='mb-3'>
-          <label className='form-label'>Published Year</label>
+          <label className='form-label'>{t('form.publishedYear')}</label>
           <input
             type='text'
             className='form-control'
@@ -99,7 +105,7 @@ const AddBook = () => {
           />
         </div>
         <div className='mb-3'>
-          <label className='form-label'>Cover (URL)</label>
+          <label className='form-label'>{t('form.cover')}</label>
           <input
             type='text'
             className='form-control'
@@ -109,7 +115,7 @@ const AddBook = () => {
           />
         </div>
         <div className='mb-3'>
-          <label className='form-label'>Genre</label>
+          <label className='form-label'>{t('form.genre')}</label>
           <input
             type='text'
             className='form-control'
@@ -119,7 +125,7 @@ const AddBook = () => {
           />
         </div>
         <div className='mb-3'>
-          <label className='form-label'>Summary</label>
+          <label className='form-label'>{t('form.summary')}</label>
           <textarea
             className='form-control'
             value={summary}
@@ -128,7 +134,7 @@ const AddBook = () => {
           ></textarea>
         </div>
         <div className='mb-3'>
-          <label className='form-label'>Comment (optional)</label>
+          <label className='form-label'>{t('form.comment')}</label>
           <textarea
             className='form-control'
             value={comment}
@@ -136,7 +142,7 @@ const AddBook = () => {
           ></textarea>
         </div>
         <div className='mb-3'>
-          <label className='form-label'>Rating</label>
+          <label className='form-label'>{t('form.rating')}</label>
           <input
             type='number'
             className='form-control'
@@ -147,8 +153,9 @@ const AddBook = () => {
           />
         </div>
         <button type='submit' className='btn btn-primary'>
-          Add Book
+          {t('form.submit')}
         </button>
+        <br />
       </form>
     </div>
   );

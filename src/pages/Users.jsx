@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
+import { Helmet } from 'react-helmet';
 
 const Users = () => {
+  const { t } = useTranslation('users');
   const [users, setUsers] = useState([]);
   const { token } = useAuth();
 
   useEffect(() => {
     if (!token) {
-      console.error('No token available');
+      console.error(t('error.noToken'));
       return;
     }
 
@@ -21,16 +24,19 @@ const Users = () => {
       .then((data) => {
         setUsers(data.data.users);
       })
-      .catch((error) => console.error('Error fetching users:', error));
-  }, [token]);
+      .catch((error) => console.error(t('error.fetchUsers'), error));
+  }, [token, t]);
 
   return (
     <div className='container mt-4'>
-      <h1 className='mb-4'>Users</h1>
+      <Helmet>
+        <title>{t('title')}</title>
+      </Helmet>
+      <h1 className='mb-4'>{t('heading')}</h1>
 
       <div className='mb-3'>
         <Link to='/create-user' className='btn btn-primary'>
-          Create New User
+          {t('createButton')}
         </Link>
       </div>
 
@@ -43,10 +49,11 @@ const Users = () => {
                   {user.firstName} {user.lastName}
                 </h5>
                 <p className='card-text'>
-                  <strong>Role:</strong> {user.role}
+                  <strong>{t('card.role')}:</strong>{' '}
+                  {user.role === 'admin' ? t('roles.admin') : t('roles.reader')}
                 </p>
                 <Link to={`/users/${user._id}`} className='btn btn-secondary'>
-                  View Details
+                  {t('card.details')}
                 </Link>
               </div>
             </div>

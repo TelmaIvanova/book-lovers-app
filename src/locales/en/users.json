@@ -1,0 +1,16 @@
+{
+  "title": "Users ‧ Book Lovers",
+  "heading": "Users",
+  "createButton": "Create New User",
+  "roles": {
+    "reader": "Reader",
+    "admin": "Admin"
+  },
+  "card": {
+    "role": "Role",
+    "details": "View Details"
+  },
+  "error": {
+    "fetch": "Error fetching users"
+  }
+}

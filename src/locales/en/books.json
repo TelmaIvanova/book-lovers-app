@@ -1,0 +1,14 @@
+{
+  "title": "Books ‧ Book Lovers",
+  "heading": "Books",
+  "addButton": "Add New Book",
+  "card": {
+    "author": "Author",
+    "genre": "Genre",
+    "rating": "Rating",
+    "details": "View Details"
+  },
+  "error": {
+    "fetch": "Error fetching books"
+  }
+}

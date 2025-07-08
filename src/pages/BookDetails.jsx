@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
+import { Helmet } from 'react-helmet';
 
 const BookDetails = () => {
+  const { t } = useTranslation('bookDetails');
   const { id } = useParams();
   const navigate = useNavigate();
   const [book, setBook] = useState(null);
@@ -20,7 +23,7 @@ const BookDetails = () => {
             'Content-Type': 'application/json',
           },
         });
-        if (!res.ok) throw new Error('Failed to fetch book');
+        if (!res.ok) throw new Error(t('error.fetch'));
         const data = await res.json();
         setBook(data.data.book);
         setFormData(data.data.book);
@@ -30,7 +33,7 @@ const BookDetails = () => {
     };
 
     fetchBook();
-  }, [id]);
+  }, [id, t]);
 
   const handleEdit = (field) => {
     setEditingField(field);
@@ -53,7 +56,7 @@ const BookDetails = () => {
 
   const handleRatingUpdate = async () => {
     if (!newRating || newRating < 1 || newRating > 5) {
-      alert('Please provide a valid rating between 1 and 5.');
+      alert(t('ratingEdit.alertInvalid'));
       return;
     }
 
@@ -72,37 +75,40 @@ const BookDetails = () => {
         setBook(updatedBook.data.book);
         setEditingRating(false);
         setNewRating('');
-        alert('Rating updated successfully!');
+        alert(t('ratingEdit.success'));
       } else {
         const errorData = await res.json();
-        alert(errorData.message || 'Failed to update rating');
+        alert(errorData.message || t('ratingEdit.failure'));
       }
     } catch (error) {
       console.error('Error updating rating:', error);
-      alert('An error occurred while updating the rating.');
+      alert(t('ratingEdit.error'));
     }
   };
 
   const handleDelete = async () => {
     if (user?.data?.user?.role !== 'admin') return;
-    if (!window.confirm('Are you sure you want to delete this book?')) return;
+    if (!window.confirm(t('delete.confirm'))) return;
 
     try {
       const res = await deleteBook(id);
       if (res?.status === 204) {
-        alert('Book deleted successfully!');
+        alert(t('delete.success'));
         navigate('/books');
       }
     } catch (error) {
       console.error(error);
-      alert('Failed to delete the book.');
+      alert(t('delete.failure'));
     }
   };
 
-  if (!book) return <p>Loading book details...</p>;
+  if (!book) return <p>{t('loading')}</p>;
 
   return (
     <div className='container mt-4'>
+      <Helmet>
+        <title>{formData.title} - {formData.author}</title>
+      </Helmet>
       <h1>
         {editingField === 'title' ? (
           <input
@@ -119,7 +125,7 @@ const BookDetails = () => {
       </h1>
 
       <p>
-        <strong>Author:</strong>{' '}
+        <strong>{t('author')}:</strong>{' '}
         {editingField === 'author' ? (
           <input
             type='text'
@@ -135,7 +141,7 @@ const BookDetails = () => {
       </p>
 
       <p>
-        <strong>Genre:</strong>{' '}
+        <strong>{t('genre')}:</strong>{' '}
         {editingField === 'genre' ? (
           <input
             type='text'
@@ -151,7 +157,7 @@ const BookDetails = () => {
       </p>
 
       <p>
-        <strong>Summary:</strong>{' '}
+        <strong>{t('summary')}:</strong>{' '}
         {editingField === 'summary' ? (
           <textarea
             name='summary'
@@ -166,7 +172,7 @@ const BookDetails = () => {
       </p>
 
       <p>
-        <strong>Rating:</strong>{' '}
+        <strong>{t('rating')}:</strong>{' '}
         {editingRating ? (
           <div>
             <input
@@ -181,7 +187,7 @@ const BookDetails = () => {
               onClick={handleRatingUpdate}
               className='btn btn-primary ms-2'
             >
-              Save
+              {t('ratingEdit.save')}
             </button>
             <button
               onClick={() => {
@@ -190,7 +196,7 @@ const BookDetails = () => {
               }}
               className='btn btn-secondary ms-2'
             >
-              Cancel
+              {t('ratingEdit.cancel')}
             </button>
           </div>
         ) : (
@@ -207,7 +213,7 @@ const BookDetails = () => {
             <div className='mt-3'>
               <p>
                 <Link to='/tips-and-tricks' className='text-primary'>
-                  Not sure how to rate? Check our tips and tricks!
+                  {t('ratingTip')}
                 </Link>
               </p>
             </div>
@@ -218,7 +224,7 @@ const BookDetails = () => {
       {user?.data?.user?.role === 'admin' && (
         <div className='mt-4'>
           <button className='btn btn-danger' onClick={handleDelete}>
-            Delete
+            {t('delete.button')}
           </button>
         </div>
       )}

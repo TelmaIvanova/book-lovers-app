@@ -1,0 +1,33 @@
+{
+  "title": "My profile ‧ Book Lovers",
+  "authRequired": "You must be logged in to view this page.",
+  "heading": "My profile",
+  "loading": "Loading...",
+  "fields": {
+    "firstName": "First name",
+    "lastName": "Last name",
+    "email": "Email"
+  },
+  "error": {
+    "fetch": "Failed to fetch user data",
+    "update": "Failed to update profile!",
+    "passwordMismatch": "Passwords do not match!",
+    "changePassword": "Something went wrong"
+  },
+  "password": {
+    "section": "Change Password",
+    "current": "Current Password",
+    "new": "New Password",
+    "confirm": "Confirm New Password",
+    "updateButton": "Update Password",
+    "success": "Password updated successfully!"
+  },
+  "delete": {
+    "section": "Delete Account",
+    "placeholder": "Enter password",
+    "button": "Confirm Delete",
+    "confirmMessage": "Warning!\nThis action is irreversible! Are you sure you want to proceed?",
+    "success": "Account deleted successfully.",
+    "failure": "Failed to delete account."
+  }
+}

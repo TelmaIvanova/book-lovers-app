@@ -1,0 +1,19 @@
+{
+  "title": "Вход ‧ Book Lovers",
+  "heading": "Вход",
+  "form": {
+    "email": "Имейл",
+    "password": "Парола",
+    "submit": "Вход",
+    "noProfile": "Нямаш профил? Регистрирай се!"
+  },
+  "or": "или",
+  "wallet": {
+    "connect": "Свържи портфейл",
+    "login": "Влез с Ethereum"
+  },
+  "error": {
+    "default": "Грешен имейл или парола!",
+    "ethereum": "Грешка при вход с Ethereum"
+  }
+}

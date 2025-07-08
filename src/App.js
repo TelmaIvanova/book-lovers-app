@@ -5,6 +5,7 @@ import Books from './pages/Books';
 import BookDetails from './pages/BookDetails';
 import AddBook from './pages/AddBooks';
 import Profile from './pages/Profile';
+import EthereumProfile from './pages/EthereumProfile';
 import Users from './pages/Users';
 import UserDetails from './pages/UserDetails';
 import CreateUser from './pages/CreateUser';
@@ -23,6 +24,7 @@ const App = () => (
         <Route path='/books/:id' element={<BookDetails />} />
         <Route path='/add-book' element={<AddBook />} />
         <Route path='/profile' element={<Profile />} />
+        <Route path='/ethereumProfile' element={<EthereumProfile />} />
         <Route path='/users' element={<Users />} />
         <Route path='/users/:id' element={<UserDetails />} />
         <Route path='/create-user' element={<CreateUser />} />

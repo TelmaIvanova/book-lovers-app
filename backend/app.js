@@ -1,6 +1,5 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const Session = require('express-session')
 require('dotenv').config({ path: '.env' });
 const CONNECTION = process.env.CONNECTION;
 const AppError = require('./utils/appError');
@@ -8,26 +7,21 @@ const errorHandler = require('./controllers/errorController');
 const app = express();
 app.use(express.json());
 
-app.use(Session({
-  name: 'siwe-quickstart',
-  secret: "siwe-quickstart-secret",
-  resave: true,
-  saveUninitialized: true,
-  cookie: { secure: false, sameSite: true }
-}));
-
 const bookRouter = require('./routes/bookRoutes');
 const userRouter = require('./routes/userRoutes');
+const ethereumUserRoute = require('./routes/ethereumUserRoutes');
 const genreRouter = require('./routes/genreRoutes');
 const discussionRouter = require('./routes/discussionRoutes');
 
 app.use('/api/books', bookRouter);
 app.use('/api/users', userRouter);
+app.use('/api/ethereumUsers', ethereumUserRoute);
 app.use('/api/nonce', userRouter);
 app.use('/api/verify', userRouter);
 app.use('/api/genres', genreRouter);
 app.use('/api/discussions', discussionRouter);
 app.use(express.static(`${__dirname}/public`));
+
 app.all('*', (req, res, next) => {
   next(new AppError('The page was not found!', 404));
 });

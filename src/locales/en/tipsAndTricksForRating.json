@@ -1,0 +1,28 @@
+{
+  "title": "Rating tips ‧ Book Lovers",
+  "heading": "Tips and Tricks for Rating",
+  "intro": "What Does Each Star Mean?",
+  "stars": {
+    "1": {
+      "title": "1 STAR (*)",
+      "paragraph": "Have you come across a tragically dull read? Did it lack structure, contain boring characters, or was it packed with grammatical errors? Perhaps it was even downright offensive. Whatever the problem was with this book, there is no denying it was bad - and we mean really bad! The 1 Star review is for books that have no place on your bookshelf. The ones that were snooze-worthy from start to finish (sadly, they are out there). If you think a book was utterly terrible and need everyone to know it, don't be afraid to use the 1 Star review. Remember - you need to back up your star rating, so be prepared to explain why the book was so disastrous in your review. If you simply didn't engage with the content as it wasn't your cup of tea, but can still appreciate that it is a good piece of writing, consider moving it up the scale."
+    },
+    "2": {
+      "title": "2 STARS (**)",
+      "paragraph": "It's safe to say that you won't reread this book, and it's doubtful that it will remain on your bookshelf. However, perhaps this book wasn't complete nonsense. The 2-star review is for a book that definitely wasn't good but wasn't completely bad. If you appreciated the story or enjoyed a few snippets of text, but felt overall that the book lacked personality and storyline, then award your below-average read a 2-star review."
+    },
+    "3": {
+      "title": "3 STARS (***)",
+      "paragraph": "Are you feeling neutral about your recent read? Were you a little underwhelmed? Are you plagued by the feeling of indifference? Then bring out the 3 Star review. You should award 3 Stars to books that you mostly enjoyed but didn't leave you with the \"wow, that was good\" kind of feeling. If, overall, you liked the book but were still troubled by a few components (i.e. Basic characters, simple storylines, obvious endings etc.) or felt it lacked personality, award your book 3 stars in appreciation, but not glorification."
+    },
+    "4": {
+      "title": "4 STARS (****)",
+      "paragraph": "Now the party is starting! 4 Stars are for books that you enjoyed, from beginning to end - a truly great read. It may not be top of your reread pile, but if the opportunity arose, you wouldn't say no. You should be pleased with all the components of the novel, and perhaps you were even thrilled about one element in particular (such as an engaging character or plot twist). A 4 Star rating is for books that are truly superb but are perhaps just missing the cherry on top to boost them to the full 5 Stars."
+    },
+    "5": {
+      "title": "5 STARS (*****)",
+      "paragraph": "Can't wait to reread? Top of your recommendation list? Can't stop thinking about the ending? Beginning? Chapter 13, page 4?! 5 Stars are for the creme de la creme of your bookshelf. Those books that give you the \"I'm so sad it has ended!\" kind of feeling. Of course, no book is entirely perfect, but if this book has you almost shouting from the rooftops, filled you with a joyous buzz and reminded you how wondrous it is to read, then 5 Stars are certainly on the menu."
+    }
+  },
+  "reference": "Reference"
+}

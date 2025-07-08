@@ -1,0 +1,19 @@
+{
+  "title": "Add book ‧ Book Lovers",
+  "heading": "Add new book",
+  "form": {
+    "title": "Title",
+    "author": "Author",
+    "isbn": "ISBN",
+    "publishedYear": "Published Year",
+    "cover": "Cover (URL)",
+    "genre": "Genre",
+    "summary": "Summary",
+    "comment": "Comment (optional)",
+    "rating": "Rating",
+    "submit": "Add Book"
+  },
+  "error": {
+    "addFailed": "Error adding book"
+  }
+}

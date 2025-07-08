@@ -1,0 +1,31 @@
+{
+  "title": "Book Lovers",
+  "intro": {
+    "heading": "Welcome to the Book Lovers app!",
+    "description": "The Internet age has transformed how we choose what to read or watch, largely thanks to review platforms like Goodreads and IMDB. Book Lovers app is here to make your book discovery journey easier and more enjoyable!",
+    "features": {
+      "reviews": "✔️ Explore book reviews and ratings.",
+      "genre": "✔️ Discover books by genre.",
+      "comments": "✔️ Share your thoughts by writing reviews and comments.",
+      "rate": "✔️ Rate books and contribute to the community.",
+      "addBooks": "✔️ Add missing books with their title, cover, and genre."
+    }
+  },
+  "gettingStarted": {
+    "heading": "Getting Started",
+    "register": "Create an account by registering",
+    "browse": "Browse the books and reviews",
+    "interact": "Rate, comment or add books",
+    "groups": "Explore genre-specific groups"
+  },
+  "registerNow": {
+    "heading": "Join the community!",
+    "description": "Become part of a vibrant community of book lovers. Register now to unlock all features, including:",
+    "features": {
+      "wishlist": "● Adding books to your wish list.",
+      "rateReview": "● Rating and reviewing books.",
+      "groups": "● Creating or managing genre-specific groups."
+    },
+    "button": "Sign up with email"
+  }
+}

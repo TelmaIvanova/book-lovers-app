@@ -1,0 +1,10 @@
+{
+  "books": "Books",
+  "about": "About",
+  "addBook": "Add book",
+  "profile": "My profile",
+  "login": "Login",
+  "register": "Register",
+  "users": "Users",
+  "logout": "Logout"
+}

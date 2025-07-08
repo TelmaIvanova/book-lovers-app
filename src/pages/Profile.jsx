@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { Helmet } from 'react-helmet';
 
 const Profile = () => {
+  const { t } = useTranslation('profile');
   const { token, deleteAccount } = useAuth();
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
@@ -23,7 +26,7 @@ const Profile = () => {
           },
         });
 
-        if (!res.ok) throw new Error('Failed to fetch user data');
+        if (!res.ok) throw new Error(t('error.fetch'));
 
         const data = await res.json();
         setUser(data.data.user);
@@ -38,7 +41,7 @@ const Profile = () => {
     };
 
     if (token) fetchMe();
-  }, [token]);
+  }, [token, t]);
 
   const handleEdit = (field) => {
     setEditingField(field);
@@ -59,7 +62,7 @@ const Profile = () => {
         body: JSON.stringify({ [field]: formData[field] }),
       });
 
-      if (!res.ok) throw new Error('Failed to update profile!');
+      if (!res.ok) throw new Error(t('error.update'));
 
       setUser((prevUser) => ({
         ...prevUser,
@@ -74,7 +77,7 @@ const Profile = () => {
 
   const handleChangePassword = async () => {
     if (newPassword !== confirmPassword) {
-      setError('Passwords do not match!');
+      setError(t('error.passwordMismatch'));
       return;
     }
 
@@ -90,10 +93,10 @@ const Profile = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Something went wrong');
+        throw new Error(errorData.message || t('error.changePassword'));
       }
 
-      alert('Password updated successfully!');
+      alert(t('password.success'));
       setError(null);
       setCurrentPassword('');
       setNewPassword('');
@@ -106,35 +109,33 @@ const Profile = () => {
   const handleDeleteAccount = async () => {
     setError(null);
 
-    if (
-      !window.confirm(
-        'Warning!\nThis action is irreversible! Are you sure you want to proceed?'
-      )
-    )
-      return;
+    if (!window.confirm(t('delete.confirmMessage'))) return;
 
     const result = await deleteAccount(currentPassword);
 
     if (result.success) {
-      alert('Account deleted successfully.');
+      alert(t('delete.success'));
       navigate('/');
     } else {
       setError(result.error);
     }
   };
 
-  if (!token) return <p>You must be logged in to view this page.</p>;
+  if (!token) return <p>{t('authRequired')}</p>;
 
   return (
     <div className='container mt-4'>
-      <h1>My Profile</h1>
+      <Helmet>
+        <title>{t('title')}</title>
+      </Helmet>
+      <h1>{t('heading')}</h1>
 
       {error && <p className='text-danger'>{error}</p>}
 
       {user ? (
         <div className='card p-4'>
           <p>
-            <strong>First name:</strong>{' '}
+            <strong>{t('fields.firstName')}:</strong>{' '}
             {editingField === 'firstName' ? (
               <input
                 type='text'
@@ -156,7 +157,7 @@ const Profile = () => {
             )}
           </p>
           <p>
-            <strong>Last name:</strong>{' '}
+            <strong>{t('fields.lastName')}:</strong>{' '}
             {editingField === 'lastName' ? (
               <input
                 type='text'
@@ -178,7 +179,7 @@ const Profile = () => {
             )}
           </p>
           <p>
-            <strong>Email:</strong>{' '}
+            <strong>{t('fields.email')}:</strong>{' '}
             {editingField === 'email' ? (
               <input
                 type='email'
@@ -201,22 +202,22 @@ const Profile = () => {
           </p>
 
           <div className='mt-3'>
-            <h4>Change Password</h4>
-            <label>Current Password</label>
+            <h4>{t('password.section')}</h4>
+            <label>{t('password.current')}</label>
             <input
               type='password'
               className='form-control'
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
             />
-            <label>New Password</label>
+            <label>{t('password.new')}</label>
             <input
               type='password'
               className='form-control'
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
             />
-            <label>Confirm New Password</label>
+            <label>{t('password.confirm')}</label>
             <input
               type='password'
               className='form-control'
@@ -227,27 +228,28 @@ const Profile = () => {
               onClick={handleChangePassword}
               className='btn btn-primary mt-2'
             >
-              Update Password
+              {t('password.updateButton')}
             </button>
           </div>
 
           <div className='mt-3'>
-            <h4>Delete Account</h4>
+            <h4>{t('delete.section')}</h4>
             <input
               type='password'
               className='form-control mb-2'
-              placeholder='Enter password'
+              placeholder={t('delete.placeholder')}
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
             />
             <button className='btn btn-danger' onClick={handleDeleteAccount}>
-              Confirm Delete
+              {t('delete.button')}
             </button>
           </div>
         </div>
       ) : (
-        <p>Loading...</p>
+        <p>{t('loading')}</p>
       )}
+      <br />
     </div>
   );
 };

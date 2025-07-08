@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { Helmet } from 'react-helmet';
 
 const Register = () => {
+  const { t } = useTranslation('register');
   const { register } = useAuth();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -25,11 +28,14 @@ const Register = () => {
 
   return (
     <div className='container mt-4'>
-      <h1>Register</h1>
+      <Helmet>
+        <title>{t('title')}</title>
+      </Helmet>
+      <h1>{t('heading')}</h1>
       <form onSubmit={handleSubmit}>
         <div className='mb-3'>
           <label htmlFor='firstName' className='form-label'>
-            First Name
+            {t('form.firstName')}
           </label>
           <input
             type='text'
@@ -43,7 +49,7 @@ const Register = () => {
         </div>
         <div className='mb-3'>
           <label htmlFor='lastName' className='form-label'>
-            Last Name
+            {t('form.lastName')}
           </label>
           <input
             type='text'
@@ -57,7 +63,7 @@ const Register = () => {
         </div>
         <div className='mb-3'>
           <label htmlFor='email' className='form-label'>
-            Email
+            {t('form.email')}
           </label>
           <input
             type='email'
@@ -71,7 +77,7 @@ const Register = () => {
         </div>
         <div className='mb-3'>
           <label htmlFor='password' className='form-label'>
-            Password
+            {t('form.password')}
           </label>
           <input
             type='password'
@@ -85,7 +91,7 @@ const Register = () => {
         </div>
         <div className='mb-3'>
           <label htmlFor='passwordConfirm' className='form-label'>
-            Confirm Password
+            {t('form.passwordConfirm')}
           </label>
           <input
             type='password'
@@ -97,16 +103,17 @@ const Register = () => {
             required
           />
         </div>
-        <div className='col-md-3'>
+        <div className='mb-3'>
           <p>
             <Link to='/login' className='text-primary'>
-              Already have a profile? Login here!
+              {t('alreadyHaveProfile')}
             </Link>
           </p>
         </div>
         <button type='submit' className='btn btn-primary'>
-          Register
+          {t('form.submit')}
         </button>
+        <br/>
       </form>
     </div>
   );

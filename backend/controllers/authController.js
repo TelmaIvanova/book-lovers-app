@@ -1,4 +1,4 @@
-const User = require('./../models/userModel');
+const { User, EthereumUser } = require('./../models/userModel');
 const { promisify } = require('util');
 const { generateNonce, SiweMessage, ErrorTypes } = require('siwe');
 
@@ -6,8 +6,8 @@ const jwt = require('jsonwebtoken');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 
-const signToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
+const signToken = (id, userType) => {
+  return jwt.sign({ id, userType }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 };
@@ -21,13 +21,14 @@ exports.signup = catchAsync(async (req, res, next) => {
     passwordConfirm: req.body.passwordConfirm,
   });
 
-  const token = signToken(newUser._id);
+  const token = signToken(newUser._id, newUser.userType);
 
   res.status(201).json({
     status: 'success',
     token,
     data: {
       user: newUser,
+      type: newUser.userType,
     },
   });
 });
@@ -45,55 +46,74 @@ exports.login = catchAsync(async (req, res, next) => {
     return next(new AppError('Incorrect email or password!', 401));
   }
 
-  const token = signToken(user._id);
+  const token = signToken(user._id, user.userType);
   res.status(200).json({
     status: 'success',
     token,
+    type: user.userType,
   });
 });
 
+const generateNonceToken = (nonce) =>
+  jwt.sign({ nonce }, process.env.JWT_SECRET, { expiresIn: '1m' });
+
 exports.nonce = catchAsync(async (req, res) => {
-  req.session.nonce = generateNonce();
-  res.setHeader('Content-Type', 'text/plain');
-  res.status(200).send(req.session.nonce);
+  const nonce = generateNonce();
+  const nonceToken = generateNonceToken(nonce);
+
+  res.status(200).json({ nonce, nonceToken });
 });
+
+const validateSIWEMessage = async (req) => {
+  if (!req.body.message || !req.body.nonceToken) {
+    throw new AppError('Expected message and nonceToken in body.', 422);
+  }
+
+  let decoded;
+  try {
+    decoded = jwt.verify(req.body.nonceToken, process.env.JWT_SECRET);
+  } catch {
+    throw new AppError('Invalid or expired nonce token.', 440);
+  }
+
+  const siweMessage = new SiweMessage(req.body.message);
+  const { data: message } = await siweMessage.verify({
+    signature: req.body.signature,
+    nonce: decoded.nonce,
+  });
+
+  return message;
+};
+
+const getOrCreateEthereumUser = async (address) => {
+  let user = await EthereumUser.findOne({ ethereumAddress: address });
+  if (!user) {
+    user = await EthereumUser.create({ ethereumAddress: address });
+  }
+  return user;
+};
 
 exports.verify = catchAsync(async (req, res) => {
   try {
-    if (!req.body.message) {
-      res
-        .status(422)
-        .json({ message: 'Expected prepareMessage object as body.' });
-      return;
-    }
+    const message = await validateSIWEMessage(req);
+    const user = await getOrCreateEthereumUser(message.address);
 
-    let SIWEObject = new SiweMessage(req.body.message);
-    const { data: message } = await SIWEObject.verify({
-      signature: req.body.signature,
-      nonce: req.session.nonce,
-    });
+    const token = signToken(user._id, 'ethereum');
 
-    req.session.siwe = message;
-    req.session.cookie.expires = new Date(message.expirationTime);
-    req.session.save(() => res.status(200).send(true));
+    res.status(200).json({ token });
   } catch (e) {
-    req.session.siwe = null;
-    req.session.nonce = null;
     console.error(e);
-    switch (e) {
-      case ErrorTypes.EXPIRED_MESSAGE: {
-        req.session.save(() => res.status(440).json({ message: e.message }));
-        break;
-      }
-      case ErrorTypes.INVALID_SIGNATURE: {
-        req.session.save(() => res.status(422).json({ message: e.message }));
-        break;
-      }
-      default: {
-        req.session.save(() => res.status(500).json({ message: e.message }));
-        break;
-      }
-    }
+
+    const status = [
+      ErrorTypes.EXPIRED_MESSAGE,
+      ErrorTypes.INVALID_SIGNATURE,
+    ].includes(e)
+      ? e === ErrorTypes.EXPIRED_MESSAGE
+        ? 440
+        : 422
+      : 500;
+
+    res.status(status).json({ message: e.message });
   }
 });
 
@@ -111,7 +131,19 @@ exports.protect = catchAsync(async (req, res, next) => {
   }
 
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-  req.user = await User.findById(decoded.id); //used later on in restrictTo
+
+  let user;
+  if (decoded.userType === 'ethereum') {
+    user = await EthereumUser.findById(decoded.id);
+  } else {
+    user = await User.findById(decoded.id);
+  }
+
+  if (!user) {
+    return next(new AppError('User not found!', 401));
+  }
+
+  req.user = user;
 
   next();
 });
@@ -179,5 +211,23 @@ exports.changePassword = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: 'success',
+  });
+});
+
+exports.deleteEthereumUser = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+  await EthereumUser.findByIdAndDelete(id);
+  res.status(204).json({
+    status: 'success',
+    data: null,
+  });
+});
+
+exports.deleteEthereumAccount = catchAsync(async (req, res, next) => {
+  await EthereumUser.findByIdAndDelete(req.user.id);
+
+  res.status(204).json({
+    status: 'success',
+    data: null,
   });
 });

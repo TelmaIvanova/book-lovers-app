@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
+import { Helmet } from 'react-helmet';
 
 const CreateUser = () => {
+  const { t } = useTranslation('createUser');
   const { token } = useAuth();
   const [formData, setFormData] = useState({
     firstName: '',
@@ -37,7 +40,7 @@ const CreateUser = () => {
 
       const data = await res.json();
       if (res.status === 201) {
-        setSuccessMessage('User created successfully!');
+        setSuccessMessage(t('success'));
         setFormData({
           firstName: '',
           lastName: '',
@@ -47,7 +50,7 @@ const CreateUser = () => {
           role: 'reader',
         });
       } else {
-        throw new Error(data.message || 'Failed to create user');
+        throw new Error(data.message || t('error.failed'));
       }
     } catch (error) {
       setErrorMessage(error.message);
@@ -56,13 +59,16 @@ const CreateUser = () => {
 
   return (
     <div className='container mt-4'>
-      <h1>Create User</h1>
+      <Helmet>
+        <title>{t('title')}</title>
+      </Helmet>
+      <h1>{t('heading')}</h1>
       {successMessage && <p className='text-success'>{successMessage}</p>}
       {errorMessage && <p className='text-danger'>{errorMessage}</p>}
       <form onSubmit={handleSubmit}>
         <div className='mb-3'>
           <label htmlFor='firstName' className='form-label'>
-            First Name
+            {t('form.firstName')}
           </label>
           <input
             type='text'
@@ -76,7 +82,7 @@ const CreateUser = () => {
         </div>
         <div className='mb-3'>
           <label htmlFor='lastName' className='form-label'>
-            Last Name
+            {t('form.lastName')}
           </label>
           <input
             type='text'
@@ -90,7 +96,7 @@ const CreateUser = () => {
         </div>
         <div className='mb-3'>
           <label htmlFor='email' className='form-label'>
-            Email
+            {t('form.email')}
           </label>
           <input
             type='email'
@@ -104,7 +110,7 @@ const CreateUser = () => {
         </div>
         <div className='mb-3'>
           <label htmlFor='password' className='form-label'>
-            Password
+            {t('form.password')}
           </label>
           <input
             type='password'
@@ -118,7 +124,7 @@ const CreateUser = () => {
         </div>
         <div className='mb-3'>
           <label htmlFor='role' className='form-label'>
-            Role
+            {t('form.role')}
           </label>
           <select
             className='form-select'
@@ -127,12 +133,12 @@ const CreateUser = () => {
             value={formData.role}
             onChange={(e) => setFormData({ ...formData, role: e.target.value })}
           >
-            <option value='reader'>Reader</option>
-            <option value='admin'>Admin</option>
+            <option value='reader'>{t('form.roleOptions.reader')}</option>
+            <option value='admin'>{t('form.roleOptions.admin')}</option>
           </select>
         </div>
         <button type='submit' className='btn btn-primary'>
-          Create User
+          {t('form.submit')}
         </button>
       </form>
     </div>

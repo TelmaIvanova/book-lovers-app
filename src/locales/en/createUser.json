@@ -1,0 +1,20 @@
+{
+  "title": "Create user ‧ Book Lovers",
+  "heading": "Create user",
+  "form": {
+    "firstName": "First name",
+    "lastName": "Last name",
+    "email": "Email",
+    "password": "Password",
+    "role": "Role",
+    "roleOptions": {
+      "reader": "Reader",
+      "admin": "Admin"
+    },
+    "submit": "Create user"
+  },
+  "success": "User created successfully!",
+  "error": {
+    "failed": "Failed to create user"
+  }
+}
