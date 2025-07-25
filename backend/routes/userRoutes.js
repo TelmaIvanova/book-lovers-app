@@ -10,6 +10,10 @@ router.patch(
   authController.protect,
   authController.updatePassword
 );
+router.post('/forgotPassword', authController.forgotPassword);
+router.patch('/resetPassword/:token', authController.resetPassword);
+
+
 router.delete(
   '/deleteAccount',
   authController.protect,

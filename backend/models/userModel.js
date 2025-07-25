@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
@@ -25,6 +26,9 @@ const userSchema = new mongoose.Schema({
       message: "Passwords don't match!",
     },
   },
+  passwordResetToken: String,
+  passwordChangedAt: Date,
+  passwordResetExpires: Date,
   role: {
     type: String,
     enum: ['reader', 'admin'],
@@ -78,6 +82,21 @@ const ethereumUserSchema = new mongoose.Schema({
   },
 });
 
+userSchema.pre('save', function (next) {
+  if (!this.isModified('password') || this.isNew) return next();
+  this.passwordChangedAt = Date.now() - 1000;
+  next();
+});
+
+userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
+  if (this.passwordChangedAt) {
+    const changedTimeStamp = this.passwordChangedAt.getTime() / 1000
+    return JWTTimestamp < changedTimeStamp;
+  }
+
+  return false;
+};
+
 userSchema.methods.isPasswordCorrect = async function (
   inputPassword,
   userPassword
@@ -91,6 +110,22 @@ userSchema.pre('save', async function (next) {
   this.passwordConfirm = undefined;
   next();
 });
+
+userSchema.methods.createPasswordResetToken = function () {
+  //generate token in hexadecimal
+  const resetToken = crypto.randomBytes(32).toString('hex');
+
+  //encrypt token
+  this.passwordResetToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+
+  //set to expire after 10 minutes in miliseconds
+  this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+
+  return resetToken;
+};
 
 const User = mongoose.model('User', userSchema);
 const EthereumUser = mongoose.model('EthereumUser', ethereumUserSchema);
