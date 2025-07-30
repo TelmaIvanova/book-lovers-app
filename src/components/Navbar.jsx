@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 const Navbar = () => {
   const { isAuthenticated, user, logout } = useAuth();
+  const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const { t, i18n } = useTranslation('navbar');
   const [language, setLanguage] = useState(i18n.language || 'en');
@@ -20,6 +21,8 @@ const Navbar = () => {
     setLanguage(lang);
     i18n.changeLanguage(lang);
   };
+
+  const toggleMenu = () => setIsOpen(!isOpen);
 
   return (
     <nav className='navbar navbar-expand-lg navbar-dark bg-dark'>
@@ -37,32 +40,53 @@ const Navbar = () => {
         <button
           className='navbar-toggler'
           type='button'
-          data-bs-toggle='collapse'
-          data-bs-target='#navbarNav'
+          aria-controls='navbarNav'
+          aria-expanded={isOpen}
+          aria-label='Toggle navigation'
+          onClick={toggleMenu}
         >
           <span className='navbar-toggler-icon'></span>
         </button>
-        <div className='collapse navbar-collapse' id='navbarNav'>
+        <div
+          className={`collapse navbar-collapse ${isOpen ? 'show' : ''}`}
+          id='navbarNav'
+        >
           <ul className='navbar-nav'>
             <li className='nav-item'>
-              <Link className='nav-link' to='/books'>
+              <Link
+                className='nav-link'
+                to='/books'
+                onClick={() => setIsOpen(false)}
+              >
                 {t('books')}
               </Link>
             </li>
             <li className='nav-item'>
-              <Link className='nav-link' to='/about'>
+              <Link
+                className='nav-link'
+                to='/about'
+                onClick={() => setIsOpen(false)}
+              >
                 {t('about')}
               </Link>
             </li>
             {!isAuthenticated ? (
               <>
                 <li className='nav-item'>
-                  <Link className='nav-link' to='/login'>
+                  <Link
+                    className='nav-link'
+                    to='/login'
+                    onClick={() => setIsOpen(false)}
+                  >
                     {t('login')}
                   </Link>
                 </li>
                 <li className='nav-item'>
-                  <Link className='nav-link' to='/register'>
+                  <Link
+                    className='nav-link'
+                    to='/register'
+                    onClick={() => setIsOpen(false)}
+                  >
                     {t('register')}
                   </Link>
                 </li>
@@ -70,26 +94,42 @@ const Navbar = () => {
             ) : (
               <>
                 <li className='nav-item'>
-                  <Link className='nav-link' to='/add-book'>
+                  <Link
+                    className='nav-link'
+                    to='/add-book'
+                    onClick={() => setIsOpen(false)}
+                  >
                     {t('addBook')}
                   </Link>
                 </li>
                 {user?.data?.user?.userType === 'regular' ? (
                   <li className='nav-item'>
-                    <Link className='nav-link' to='/profile'>
+                    <Link
+                      className='nav-link'
+                      to='/profile'
+                      onClick={() => setIsOpen(false)}
+                    >
                       {t('profile')}
                     </Link>
                   </li>
                 ) : (
                   <li className='nav-item'>
-                    <Link className='nav-link' to='/ethereumProfile'>
+                    <Link
+                      className='nav-link'
+                      to='/ethereumProfile'
+                      onClick={() => setIsOpen(false)}
+                    >
                       {t('profile')}
                     </Link>
                   </li>
                 )}
                 {user?.data?.user?.role === 'admin' && (
                   <li className='nav-item'>
-                    <Link className='nav-link' to='/users'>
+                    <Link
+                      className='nav-link'
+                      to='/users'
+                      onClick={() => setIsOpen(false)}
+                    >
                       {t('users')}
                     </Link>
                   </li>
@@ -97,7 +137,10 @@ const Navbar = () => {
                 <li className='nav-item'>
                   <button
                     className='nav-link btn btn-link'
-                    onClick={handleLogout}
+                    onClick={() => {
+                      handleLogout();
+                      setIsOpen(false);
+                    }}
                   >
                     {t('logout')}
                   </button>
