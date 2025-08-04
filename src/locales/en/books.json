@@ -6,7 +6,8 @@
     "author": "Author",
     "genre": "Genre",
     "rating": "Rating",
-    "details": "View Details"
+    "details": "View Details",
+    "buy": "Buy"
   },
   "error": {
     "fetch": "Error fetching books"

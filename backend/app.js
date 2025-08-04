@@ -21,6 +21,7 @@ app.use('/api/verify', userRouter);
 app.use('/api/genres', genreRouter);
 app.use('/api/discussions', discussionRouter);
 app.use(express.static(`${__dirname}/public`));
+app.use('/img', express.static(`${__dirname}/public/img`));
 
 app.all('*', (req, res, next) => {
   next(new AppError('The page was not found!', 404));

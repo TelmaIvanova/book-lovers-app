@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const Schema = mongoose.Schema;
 
 const bookSchema = new mongoose.Schema({
   title: {
@@ -13,6 +14,7 @@ const bookSchema = new mongoose.Schema({
     required: [true, 'A book must contain an author!'],
     trim: true,
   },
+  uploadedBy: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   isbn: {
     type: String,
     required: [true, 'A book must contain an ISBN!'],
@@ -29,8 +31,9 @@ const bookSchema = new mongoose.Schema({
     required: [true, 'A book must contain a published year!'],
     trim: true,
   },
-  imageCover: {
+  coverImage: {
     type: String,
+    required: true,
   },
   genre: {
     type: String,

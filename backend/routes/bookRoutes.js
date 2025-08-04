@@ -6,11 +6,18 @@ const router = express.Router();
 router
   .route('/')
   .get(bookController.getAllBooks)
-  .post(authController.protect, bookController.addBook);
+  .post(
+    bookController.uploadCoverImage,
+    bookController.resizeCoverImage,
+    authController.protect,
+    bookController.addBook
+  );
 router
   .route('/:id')
   .get(bookController.getBook)
   .patch(
+    bookController.uploadCoverImage,
+    bookController.resizeCoverImage,
     authController.protect,
     bookController.updateBook
   )
@@ -19,6 +26,6 @@ router
     authController.restrictTo('admin'),
     bookController.deleteBook
   );
-  router.patch('/:id/rate', authController.protect, bookController.rateBook);
+router.patch('/:id/rate', authController.protect, bookController.rateBook);
 
 module.exports = router;

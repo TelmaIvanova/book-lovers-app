@@ -10,7 +10,7 @@ const AddBook = () => {
   const [author, setAuthor] = useState('');
   const [isbn, setIsbn] = useState('');
   const [publishedYear, setPublishedYear] = useState('');
-  const [cover, setCover] = useState('');
+  const [coverFile, setCoverFile] = useState(null);
   const [genre, setGenre] = useState('');
   const [summary, setSummary] = useState('');
   const [comment, setComment] = useState('');
@@ -29,25 +29,25 @@ const AddBook = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const bookData = {
-      title,
-      author,
-      isbn,
-      publishedYear,
-      cover,
-      genre,
-      summary,
-      comment,
-      rating,
-    };
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('author', author);
+    formData.append('isbn', isbn);
+    formData.append('publishedYear', publishedYear);
+    if (coverFile) {
+      formData.append('photo', coverFile);
+    }
+    formData.append('genre', genre);
+    formData.append('summary', summary);
+    formData.append('comment', comment);
+    formData.append('rating', rating);
 
     const res = await fetch('/api/books', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(bookData),
+      body: formData,
     });
 
     if (res.ok) {
@@ -107,12 +107,23 @@ const AddBook = () => {
         <div className='mb-3'>
           <label className='form-label'>{t('form.cover')}</label>
           <input
-            type='text'
+            type='file'
+            accept='image/*'
             className='form-control'
-            value={cover}
-            onChange={(e) => setCover(e.target.value)}
+            onChange={(e) => setCoverFile(e.target.files[0])}
             required
           />
+          {coverFile && (
+            <img
+              src={URL.createObjectURL(coverFile)}
+              alt='Cover preview'
+              style={{
+                display: 'block',
+                margin: '10px auto 0',
+                maxWidth: '200px',
+              }}
+            />
+          )}
         </div>
         <div className='mb-3'>
           <label className='form-label'>{t('form.genre')}</label>
@@ -152,7 +163,11 @@ const AddBook = () => {
             max='5'
           />
         </div>
-        <button type='submit' className='btn btn-primary'>
+        <button
+          type='submit'
+          className='btn btn-primary'
+          disabled={!coverFile || !title || !author}
+        >
           {t('form.submit')}
         </button>
         <br />
