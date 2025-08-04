@@ -8,7 +8,7 @@ router
   .get(bookController.getAllBooks)
   .post(
     bookController.uploadCoverImage,
-    bookController.resizeCoverImage,
+    bookController.resizeAndUploadCoverImage,
     authController.protect,
     bookController.addBook
   );
@@ -17,7 +17,7 @@ router
   .get(bookController.getBook)
   .patch(
     bookController.uploadCoverImage,
-    bookController.resizeCoverImage,
+    bookController.resizeAndUploadCoverImage,
     authController.protect,
     bookController.updateBook
   )

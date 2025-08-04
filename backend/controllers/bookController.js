@@ -4,6 +4,7 @@ const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 const multer = require('multer');
 const sharp = require('sharp');
+const cloudinary = require('./../utils/cloudinary');
 
 const multerStorage = multer.memoryStorage();
 
@@ -22,16 +23,38 @@ const upload = multer({
 
 exports.uploadCoverImage = upload.single('photo');
 
-exports.resizeCoverImage = (req, res, next) => {
-  req.file.filename = `book-cover-${Date.now()}.jpeg`;
+const streamUpload = (buffer) => {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: 'book-covers', resource_type: 'image' },
+      (error, result) => {
+        if (error) reject(new AppError('Cloudinary upload failed', 500));
+        else resolve(result);
+      }
+    );
 
-  sharp(req.file.buffer)
-    .resize(500, 500)
-    .toFormat('jpeg')
-    .jpeg({ quality: 90 })
-    .toFile(`./../public/img/${req.file.filename}`);
+    stream.end(buffer);
+  });
+};
 
-  next();
+exports.resizeAndUploadCoverImage = async (req, res, next) => {
+  if (!req.file) return next();
+
+  try {
+    const resizedBuffer = await sharp(req.file.buffer)
+      .resize(500, 500)
+      .toFormat('jpeg')
+      .jpeg({ quality: 90 })
+      .toBuffer();
+
+    const result = await streamUpload(resizedBuffer);
+
+    req.file.cloudinaryUrl = result.secure_url;
+
+    next();
+  } catch (err) {
+    next(err);
+  }
 };
 
 exports.getAllBooks = catchAsync(async (req, res) => {
@@ -62,12 +85,14 @@ exports.getBook = catchAsync(async (req, res, next) => {
 exports.addBook = catchAsync(async (req, res, next) => {
   req.body.uploadedBy = req.user.id;
 
-  if (!req.file) {
+  if (!req.file || !req.file.cloudinaryUrl) {
     return next(new AppError('No image uploaded!', 400));
   }
-  req.body.coverImage = `/img/${req.file.filename}`;
+
+  req.body.coverImage = req.file.cloudinaryUrl;
 
   const newBook = await Book.create(req.body);
+
   res.status(201).json({
     status: 'success',
     data: {
