@@ -18,7 +18,7 @@ const Books = () => {
 
   return (
     <div className='container mt-4'>
-       <Helmet>
+      <Helmet>
         <title>{t('title')}</title>
       </Helmet>
       <h1 className='mb-4'>{t('heading')}</h1>
@@ -28,28 +28,69 @@ const Books = () => {
         </Link>
       </div>
       <div className='row'>
-        {books.map((book) => (
-          <div className='col-md-4 mb-4' key={book._id}>
-            <div className='card'>
-              <div className='card-body'>
-                <h5 className='card-title'>{book.title}</h5>
-                <p className='card-text'>
-                  {t('card.author')}: {book.author}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          {books.map((book) => (
+            <div
+              key={book._id}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                padding: '12px',
+                border: '1px solid #ddd',
+                borderRadius: '8px',
+                width: '100%',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+              }}
+            >
+              <img
+                src={book.coverImage}
+                alt={book.title}
+                style={{
+                  width: '120px',
+                  height: '120px',
+                  objectFit: 'cover',
+                  borderRadius: '4px',
+                  marginRight: '16px',
+                }}
+              />
+              <div style={{ flex: 1 }}>
+                <h2 style={{ margin: '0 0 8px' }}>
+                  <Link
+                    to={`/books/${book._id}`}
+                    style={{ textDecoration: 'none', color: 'inherit' }}
+                  >
+                    {book.title}
+                  </Link>
+                </h2>
+                <p style={{ margin: '0 0 4px', color: '#555' }}>
+                  {book.author}
                 </p>
-                <p className='card-text'>
-                  {t('card.genre')}: {book.genre}
+                <p style={{ margin: 0, color: '#777', fontSize: '14px' }}>
+                  {book.summary?.length > 150
+                    ? book.summary.slice(0, 150) + '...'
+                    : book.summary}
                 </p>
-                <p className='card-text'>
-                  {t('card.rating')}: {book.rating}
-                </p>
+              </div>
+              <div
+                style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
+              >
                 <Link to={`/books/${book._id}`} className='btn btn-secondary'>
-                  {t('card.details')}
+                   {t('card.details')}
                 </Link>
+                <button
+                  className='btn btn-primary'
+                  onClick={() => {
+                    //todo: add to card function
+                  }}
+                >
+                  {t('card.buy')}
+                </button>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
+      <br />
     </div>
   );
 };

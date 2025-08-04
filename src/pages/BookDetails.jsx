@@ -107,8 +107,15 @@ const BookDetails = () => {
   return (
     <div className='container mt-4'>
       <Helmet>
-        <title>{formData.title} - {formData.author}</title>
+        <title>
+          {formData.title} - {formData.author}
+        </title>
       </Helmet>
+      <img
+        src={book.coverImage}
+        alt={book.title}
+        style={{ width: '400px', height: 'auto' }}
+      />
       <h1>
         {editingField === 'title' ? (
           <input
@@ -228,6 +235,7 @@ const BookDetails = () => {
           </button>
         </div>
       )}
+      <br />
     </div>
   );
 };
