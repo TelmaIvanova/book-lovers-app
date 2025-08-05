@@ -15,6 +15,11 @@ const AddBook = () => {
   const [summary, setSummary] = useState('');
   const [comment, setComment] = useState('');
   const [rating, setRating] = useState(0);
+  const [status, setStatus] = useState('');
+  const [type, setType] = useState('');
+  const [language, setLanguage] = useState('');
+  const [pages, setPages] = useState('');
+  const [coverType, setCoverType] = useState('');
 
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
@@ -38,6 +43,11 @@ const AddBook = () => {
       formData.append('photo', coverFile);
     }
     formData.append('genre', genre);
+    formData.append('status', status);
+    formData.append('type', type);
+    formData.append('language', language);
+    formData.append('pages', pages);
+    formData.append('cover', coverType);
     formData.append('summary', summary);
     formData.append('comment', comment);
     formData.append('rating', rating);
@@ -103,6 +113,85 @@ const AddBook = () => {
             onChange={(e) => setPublishedYear(e.target.value)}
             required
           />
+        </div>
+        <div className='mb-3'>
+          <label className='form-label'>{t('form.status')}</label>
+          <select
+            className='form-select'
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            required
+          >
+            <option value='' disabled>
+              {t('form.status')}
+            </option>
+            <option value='New'>{t('form.statusOptions.New')}</option>
+            <option value='Very good'>
+              {t('form.statusOptions.Very good')}
+            </option>
+            <option value='Good'>{t('form.statusOptions.Good')}</option>
+            <option value='Bad'>{t('form.statusOptions.Bad')}</option>
+          </select>
+        </div>
+        <div className='mb-3'>
+          <label className='form-label'>{t('form.type')}</label>
+          <select
+            className='form-select'
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+            required
+          >
+            <option value='' disabled>
+              {t('form.type')}
+            </option>
+            <option value='E-book'>{t('form.typeOptions.E-book')}</option>
+            <option value='On paper'>{t('form.typeOptions.On paper')}</option>
+          </select>
+        </div>
+        <div className='mb-3'>
+          <label className='form-label'>{t('form.language')}</label>
+          <select
+            className='form-select'
+            value={language}
+            onChange={(e) => setLanguage(e.target.value)}
+            required
+          >
+            <option value='' disabled>
+              {t('form.language')}
+            </option>
+            <option value='English'>{t('form.languageOptions.English')}</option>
+            <option value='Bulgarian'>
+              {t('form.languageOptions.Bulgarian')}
+            </option>
+            <option value='Other'>{t('form.languageOptions.Other')}</option>
+          </select>
+        </div>
+        <div className='mb-3'>
+          <label className='form-label'>{t('form.pages')}</label>
+          <input
+            type='number'
+            className='form-control'
+            value={pages}
+            onChange={(e) => setPages(e.target.value)}
+            min='1'
+            required
+          />
+        </div>
+        <div className='mb-3'>
+          <label className='form-label'>{t('form.cover')}</label>
+          <select
+            className='form-select'
+            value={coverType}
+            onChange={(e) => setCoverType(e.target.value)}
+          >
+            <option value=''>{t('form.cover')}</option>
+            <option value='hardcover'>
+              {t('form.coverOptions.hardcover')}
+            </option>
+            <option value='softcover'>
+              {t('form.coverOptions.softcover')}
+            </option>
+          </select>
         </div>
         <div className='mb-3'>
           <label className='form-label'>{t('form.cover')}</label>

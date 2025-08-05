@@ -39,6 +39,29 @@ const bookSchema = new mongoose.Schema({
     type: String,
     required: [true, 'A book must contain a genre!'],
   },
+  status: {
+    type: String,
+    enum: ['New', 'Very good', 'Good', 'Bad'],
+    required: true
+  },
+  type: {
+    type: String,
+    enum: ['E-book', 'On paper'],
+    required: true
+  },
+  language: {
+    type: String,
+    enum: ['English', 'Bulgarian', 'Other'],
+    required: true
+  },
+  pages: {
+    type: Number,
+    required: true
+  },
+  cover: {
+    type: String,
+    enum: ['hardcover', 'softcover']
+  },
   summary: {
     type: String,
     required: [true, 'A book must contain a summary!'],
