@@ -6,12 +6,36 @@
     "author": "Author",
     "isbn": "ISBN",
     "publishedYear": "Published Year",
-    "cover": "Cover (URL)",
+    "coverImage": "Cover image",
     "genre": "Genre",
     "summary": "Summary",
     "comment": "Comment (optional)",
     "rating": "Rating",
-    "submit": "Add Book"
+    "submit": "Add Book",
+    "status": "Status",
+    "statusOptions": {
+      "New": "New",
+      "Very good": "Very good",
+      "Good": "Good",
+      "Bad": "Bad"
+    },
+    "type": "Type",
+    "typeOptions": {
+      "E-book": "E-book",
+      "On paper": "On paper"
+    },
+    "language": "Language",
+    "languageOptions": {
+      "English": "English",
+      "Bulgarian": "Bulgarian",
+      "Other": "Other"
+    },
+    "pages": "Pages",
+    "cover": "Cover",
+    "coverOptions": {
+      "hardcover": "Hardcover",
+      "softcover": "Softcover"
+    }
   },
   "error": {
     "addFailed": "Error adding book"

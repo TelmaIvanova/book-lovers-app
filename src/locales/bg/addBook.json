@@ -6,12 +6,36 @@
     "author": "Автор",
     "isbn": "ISBN",
     "publishedYear": "Година на публикуване",
-    "cover": "Корица (URL)",
+    "coverImage": "Обложка",
     "genre": "Жанр",
     "summary": "Резюме",
     "comment": "Коментар (по желание)",
     "rating": "Оценка",
-    "submit": "Добави книга"
+    "submit": "Добави книга",
+    "status": "Състояние",
+    "statusOptions": {
+      "New": "Нова",
+      "Very good": "Много добро",
+      "Good": "Добро",
+      "Bad": "Лошо"
+    },
+    "type": "Тип",
+    "typeOptions": {
+      "E-book": "Електронна книга",
+      "On paper": "На хартия"
+    },
+    "language": "Език",
+    "languageOptions": {
+      "English": "Английски",
+      "Bulgarian": "Български",
+      "Other": "Друг"
+    },
+    "pages": "Страници",
+    "cover": "Тип корица",
+    "coverOptions": {
+      "hardcover": "Твърда",
+      "softcover": "Мека"
+    }
   },
   "error": {
     "addFailed": "Грешка при добавяне на книга"
