@@ -18,8 +18,16 @@ const AddBook = () => {
   const [status, setStatus] = useState('');
   const [type, setType] = useState('');
   const [language, setLanguage] = useState('');
+  const [languageOther, setLanguageOther] = useState('');
   const [pages, setPages] = useState('');
   const [coverType, setCoverType] = useState('');
+  const [price, setPrice] = useState({
+    amount: '',
+    currency: 'BGN',
+    isFree: false,
+    isExchange: false,
+  });
+  const [publisher, setPublisher] = useState('');
 
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
@@ -31,9 +39,25 @@ const AddBook = () => {
     }
   }, [isAuthenticated, navigate]);
 
+  const handlePriceChange = (field, value) => {
+    setPrice((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const appendPriceToFormData = (formData, price) => {
+    let amountToSend = 0;
+
+    if (!price.isFree && !price.isExchange) {
+      amountToSend = Number(price.amount) || 0;
+    }
+
+    formData.append('price.amount', amountToSend);
+    formData.append('price.currency', price.currency);
+    formData.append('price.isFree', price.isFree);
+    formData.append('price.isExchange', price.isExchange);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const formData = new FormData();
     formData.append('title', title);
     formData.append('author', author);
@@ -42,16 +66,20 @@ const AddBook = () => {
     if (coverFile) {
       formData.append('photo', coverFile);
     }
+    formData.append('publisher', publisher);
     formData.append('genre', genre);
     formData.append('status', status);
     formData.append('type', type);
-    formData.append('language', language);
+    const languageValue = language === 'Other' ? languageOther : language;
+    formData.append('language', languageValue);
     formData.append('pages', pages);
-    formData.append('cover', coverType);
+    if (coverType !== '') {
+      formData.append('cover', coverType);
+    }
     formData.append('summary', summary);
     formData.append('comment', comment);
-    formData.append('rating', rating);
-
+    formData.append('newVote', rating);
+    appendPriceToFormData(formData, price);
     const res = await fetch('/api/books', {
       method: 'POST',
       headers: {
@@ -94,6 +122,81 @@ const AddBook = () => {
             required
           />
         </div>
+        <div className='mb-3 text-center'>
+          <div className='d-inline-flex gap-3 align-items-center'>
+            <div className='form-check'>
+              <input
+                className='form-check-input'
+                type='checkbox'
+                id='isFree'
+                checked={price.isFree}
+                onChange={(e) => handlePriceChange('isFree', e.target.checked)}
+              />
+              <label className='form-check-label' htmlFor='isFree'>
+                {t('bookDetails:price.free')}
+              </label>
+            </div>
+            <div className='form-check'>
+              <input
+                className='form-check-input'
+                type='checkbox'
+                id='isExchange'
+                checked={price.isExchange}
+                onChange={(e) =>
+                  handlePriceChange('isExchange', e.target.checked)
+                }
+              />
+              <label className='form-check-label' htmlFor='isExchange'>
+                {t('bookDetails:price.exchange')}
+              </label>
+            </div>
+          </div>
+        </div>
+        {!price.isFree && !price.isExchange && (
+          <>
+            <div className='mb-3'>
+              <label htmlFor='priceAmount' className='form-label d-block'>
+                {t('form.price')}
+              </label>
+              <div
+                className='d-flex justify-content-center align-items-center'
+                style={{ maxWidth: '400px', margin: '0 auto' }}
+              >
+                <input
+                  type='number'
+                  id='priceAmount'
+                  className='form-control'
+                  style={{
+                    borderTopRightRadius: 0,
+                    borderBottomRightRadius: 0,
+                  }}
+                  min='0'
+                  value={price.amount}
+                  onChange={(e) => handlePriceChange('amount', e.target.value)}
+                  disabled={price.isFree || price.isExchange}
+                  required={!price.isFree && !price.isExchange}
+                />
+                <select
+                  className='form-select'
+                  style={{
+                    borderTopLeftRadius: 0,
+                    borderBottomLeftRadius: 0,
+                    width: '100px',
+                  }}
+                  value={price.currency}
+                  onChange={(e) =>
+                    handlePriceChange('currency', e.target.value)
+                  }
+                  disabled={price.isFree || price.isExchange}
+                >
+                  <option value='BGN'>BGN</option>
+                  <option value='EUR'>EUR</option>
+                  <option value='ETH'>ETH</option>
+                </select>
+              </div>
+            </div>
+          </>
+        )}
         <div className='mb-3'>
           <label className='form-label'>{t('form.isbn')}</label>
           <input
@@ -102,6 +205,15 @@ const AddBook = () => {
             value={isbn}
             onChange={(e) => setIsbn(e.target.value)}
             required
+          />
+        </div>
+        <div className='mb-3'>
+          <label className='form-label'>{t('form.publisher')}</label>
+          <input
+            type='text'
+            className='form-control'
+            value={publisher}
+            onChange={(e) => setPublisher(e.target.value)}
           />
         </div>
         <div className='mb-3'>
@@ -126,9 +238,7 @@ const AddBook = () => {
               {t('form.status')}
             </option>
             <option value='New'>{t('form.statusOptions.New')}</option>
-            <option value='Very good'>
-              {t('form.statusOptions.Very good')}
-            </option>
+            <option value='VeryGood'>{t('form.statusOptions.VeryGood')}</option>
             <option value='Good'>{t('form.statusOptions.Good')}</option>
             <option value='Bad'>{t('form.statusOptions.Bad')}</option>
           </select>
@@ -145,7 +255,7 @@ const AddBook = () => {
               {t('form.type')}
             </option>
             <option value='E-book'>{t('form.typeOptions.E-book')}</option>
-            <option value='On paper'>{t('form.typeOptions.On paper')}</option>
+            <option value='OnPaper'>{t('form.typeOptions.OnPaper')}</option>
           </select>
         </div>
         <div className='mb-3'>
@@ -166,6 +276,20 @@ const AddBook = () => {
             <option value='Other'>{t('form.languageOptions.Other')}</option>
           </select>
         </div>
+        {language === 'Other' && (
+          <div className='mb-3'>
+            <label className='form-label'>
+              {t('form.languageOptions.enterLanguage')}
+            </label>
+            <input
+              type='text'
+              className='form-control'
+              value={languageOther}
+              onChange={(e) => setLanguageOther(e.target.value)}
+              required
+            />
+          </div>
+        )}
         <div className='mb-3'>
           <label className='form-label'>{t('form.pages')}</label>
           <input
@@ -184,7 +308,7 @@ const AddBook = () => {
             value={coverType}
             onChange={(e) => setCoverType(e.target.value)}
           >
-            <option value=''>{t('form.cover')}</option>
+            <option value=''>-</option>
             <option value='hardcover'>
               {t('form.coverOptions.hardcover')}
             </option>

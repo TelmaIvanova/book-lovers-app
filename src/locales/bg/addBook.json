@@ -4,7 +4,9 @@
   "form": {
     "title": "Заглавие",
     "author": "Автор",
+    "price": "Цена",
     "isbn": "ISBN",
+    "publisher": "Издателство",
     "publishedYear": "Година на публикуване",
     "coverImage": "Обложка",
     "genre": "Жанр",
@@ -14,21 +16,22 @@
     "submit": "Добави книга",
     "status": "Състояние",
     "statusOptions": {
-      "New": "Нова",
-      "Very good": "Много добро",
+      "New": "Новo",
+      "VeryGood": "Много добро",
       "Good": "Добро",
       "Bad": "Лошо"
     },
     "type": "Тип",
     "typeOptions": {
       "E-book": "Електронна книга",
-      "On paper": "На хартия"
+      "OnPaper": "На хартия"
     },
     "language": "Език",
     "languageOptions": {
       "English": "Английски",
       "Bulgarian": "Български",
-      "Other": "Друг"
+      "Other": "Друг",
+      "enterLanguage": "Въведи език:"
     },
     "pages": "Страници",
     "cover": "Тип корица",

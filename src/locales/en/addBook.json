@@ -4,7 +4,9 @@
   "form": {
     "title": "Title",
     "author": "Author",
+    "price": "Price",
     "isbn": "ISBN",
+    "publisher": "Publisher",
     "publishedYear": "Published Year",
     "coverImage": "Cover image",
     "genre": "Genre",
@@ -22,13 +24,14 @@
     "type": "Type",
     "typeOptions": {
       "E-book": "E-book",
-      "On paper": "On paper"
+      "OnPaper": "On paper"
     },
     "language": "Language",
     "languageOptions": {
       "English": "English",
       "Bulgarian": "Bulgarian",
-      "Other": "Other"
+      "Other": "Other",
+      "enterLanguage": "Enter language:"
     },
     "pages": "Pages",
     "cover": "Cover",

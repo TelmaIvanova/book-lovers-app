@@ -46,7 +46,7 @@ i18n.use(initReactI18next).init({
       register: enRegister,
       tipsAndTricks: enTipsAndTricks,
       userDetails: enUserDetails,
-      users: enUsers,
+      users: enUsers, 
     },
     bg: {
       navbar: bgNavbar,

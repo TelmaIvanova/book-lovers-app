@@ -134,6 +134,7 @@ function calculateAverageRating(r1, r2, r3, r4, r5) {
 
 exports.rateBook = catchAsync(async (req, res, next) => {
   const book = await Book.findById(req.params.id);
+  console.log('Received newVote:', req.body.newVote, typeof req.body.newVote);
 
   if (!book) {
     return next(new AppError('Book not found!', 404));

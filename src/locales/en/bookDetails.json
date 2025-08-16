@@ -19,5 +19,35 @@
     "confirm": "Are you sure you want to delete this book?",
     "success": "Book deleted successfully!",
     "failure": "Failed to delete the book."
-  }
+  },
+  "isbn": "ISBN",
+  "publishedYear": "Published Year",
+  "status": "Status",
+  "statusOptions": {
+    "New": "New",
+    "VeryGood": "Very good",
+    "Good": "Good",
+    "Bad": "Bad"
+  },
+  "publisher": "Publisher",
+  "type": "Type",
+  "typeOptions": {
+    "E-book": "E-book",
+    "OnPaper": "On paper"
+  },
+  "price": {
+    "free": "Free",
+    "exchange": "Exchange"
+  },
+  "language": "Language",
+  "pages": "Pages",
+  "cover": "Cover",
+  "coverOptions": {
+    "hardcover": "Hardcover",
+    "softcover": "Softcover"
+  },
+  "addComment": "Add comment",
+  "comment": "Comment",
+  "seller": "Seller",
+  "unknown": "Unknown"
 }

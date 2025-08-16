@@ -7,24 +7,43 @@ const bookSchema = new mongoose.Schema({
     type: String,
     required: [true, 'A book must contain a title!'],
     trim: true,
-    unique: true,
   },
   author: {
     type: String,
     required: [true, 'A book must contain an author!'],
     trim: true,
   },
+  price: {
+    amount: {
+      type: Number,
+      min: 0,
+      required: true,
+    },
+    currency: {
+      type: String,
+      enum: ['BGN', 'EUR', 'ETH'],
+      required: true,
+    },
+    isFree: {
+      type: Boolean,
+      default: false,
+    },
+    isExchange: {
+      type: Boolean,
+      default: false,
+    },
+  },
   uploadedBy: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   isbn: {
     type: String,
     required: [true, 'A book must contain an ISBN!'],
     trim: true,
-    validate: {
-      validator: function (val) {
-        return validator.isISBN(val);
-      },
-      message: 'A book must contain a valid ISBN!',
-    },
+    // validate: {
+    //   validator: function (val) {
+    //     return validator.isISBN(val);
+    //   },
+    //   message: 'A book must contain valid ISBN!',
+    // },
   },
   publishedYear: {
     type: Number,
@@ -33,7 +52,7 @@ const bookSchema = new mongoose.Schema({
   },
   coverImage: {
     type: String,
-    required: true,
+    required: [true, 'A book must contain cover image!'],
   },
   genre: {
     type: String,
@@ -41,26 +60,26 @@ const bookSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['New', 'Very good', 'Good', 'Bad'],
-    required: true
+    enum: ['New', 'VeryGood', 'Good', 'Bad'],
+    required: true,
   },
   type: {
     type: String,
-    enum: ['E-book', 'On paper'],
-    required: true
+    enum: ['E-book', 'OnPaper'],
+    required: [true, 'Please select book type.'],
   },
   language: {
     type: String,
-    enum: ['English', 'Bulgarian', 'Other'],
-    required: true
+    required: [true, 'Please enter language.'],
   },
   pages: {
     type: Number,
-    required: true
+    required: [true, 'Please enter pages.'],
   },
+  publisher: String,
   cover: {
     type: String,
-    enum: ['hardcover', 'softcover']
+    enum: ['hardcover', 'softcover'],
   },
   summary: {
     type: String,

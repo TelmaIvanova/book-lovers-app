@@ -19,5 +19,35 @@
     "confirm": "Сигурен ли си, че искаш да изтриеш тази книга?",
     "success": "Книгата беше изтрита успешно!",
     "failure": "Неуспешно изтриване на книгата."
-  }
+  },
+  "isbn": "ISBN",
+  "publishedYear": "Година на издаване",
+  "status": "Състояние",
+  "statusOptions": {
+    "New": "Нова",
+    "VeryGood": "Много добро",
+    "Good": "Добро",
+    "Bad": "Лошо"
+  },
+  "publisher": "Издателство",
+  "type": "Тип",
+  "typeOptions": {
+    "E-book": "Електронна книга",
+    "OnPaper": "На хартия"
+  },
+  "price": {
+    "free": "Безплатна",
+    "exchange": "Размяна"
+  },
+  "language": "Език",
+  "pages": "Страници",
+  "cover": "Корица",
+  "coverOptions": {
+    "hardcover": "Твърда",
+    "softcover": "Мека"
+  },
+  "comment": "Коментар",
+  "addComment": "Добави коментар",
+  "seller": "Продавач",
+  "unknown": "Неизвестен"
 }
