@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
+import AddToCartButton from '../components/AddToCartButton';
 
 const Books = () => {
   const { t } = useTranslation(['book', 'bookDetails']);
@@ -129,14 +130,7 @@ const Books = () => {
                     >
                       {t('book:card.details')}
                     </Link>
-                    <button
-                      className='btn btn-primary btn-sm'
-                      onClick={() => {
-                        // TODO: add to cart / buy action
-                      }}
-                    >
-                      {t('book:card.buy')}
-                    </button>
+                    <AddToCartButton book={book} />
                   </div>
                 </div>
               </div>
@@ -144,7 +138,6 @@ const Books = () => {
           })}
         </div>
       </div>
-
       <br />
     </div>
   );

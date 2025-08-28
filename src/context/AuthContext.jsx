@@ -12,38 +12,44 @@ export const AuthProvider = ({ children }) => {
   let [address, setAddress] = useState('');
 
   useEffect(() => {
-    if (token) {
-      localStorage.setItem('token', token);
-      const fetchUserData = async () => {
-        try {
-          const type = localStorage.getItem('userType') || 'regular';
-          const endpoint =
-            type === 'ethereum'
-              ? '/api/ethereumUsers/ethereumProfile'
-              : '/api/users/profile';
-
-          const response = await fetch(endpoint, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          const data = await response.json();
-          if (response.ok) {
-            setUser(data);
-          } else {
-            throw new Error(data.message || 'Failed to fetch user data');
-          }
-        } catch (error) {
-          console.error(error);
-        }
-      };
-
-      fetchUserData();
-    } else {
+    if (!token) {
       setUser(null);
+      return;
     }
+
+    const fetchUserData = async () => {
+      const headers = {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      };
+      try {
+        const userType = localStorage.getItem('userType');
+
+        if (userType === 'regular') {
+          const res = await fetch('/api/users/profile', { headers });
+          if (!res.ok) throw new Error('Failed regular profile');
+          const data = await res.json();
+          setUser(data.data.user);
+          return;
+        }
+
+        if (userType === 'ethereum') {
+          const res = await fetch('/api/ethereumUsers/ethereumProfile', {
+            headers,
+          });
+          if (!res.ok) throw new Error('Failed eth profile');
+          const data = await res.json();
+          setUser(data.data.user);
+          return;
+        }
+      } catch (err) {
+        console.error(err);
+        setUser(null);
+        localStorage.removeItem('userType');
+      }
+    };
+
+    fetchUserData();
   }, [token]);
 
   const login = async (email, password) => {
@@ -57,7 +63,6 @@ export const AuthProvider = ({ children }) => {
       throw new Error(data.message || 'Login failed');
     }
     setToken(data.token);
-    setToken(data.token);
     localStorage.setItem('token', data.token);
     localStorage.setItem('userType', 'regular');
 
@@ -69,7 +74,6 @@ export const AuthProvider = ({ children }) => {
       .send('eth_requestAccounts', [])
       .catch(() => console.log('User rejected request'));
 
-    console.log(accounts);
     if (accounts[0]) {
       setAddress(accounts[0]);
     }
@@ -77,6 +81,7 @@ export const AuthProvider = ({ children }) => {
 
   const loginWithEthereum = async () => {
     const signer = await provider.getSigner();
+    const network = await provider.getNetwork();
 
     // Get nonce and nonceToken from backend
     const res = await fetch('/api/ethereumUsers/nonce');
@@ -93,7 +98,7 @@ export const AuthProvider = ({ children }) => {
       statement: 'Sign in with Ethereum to the app.',
       uri: window.location.origin,
       version: '1',
-      chainId: 1,
+      chainId: network.chainId, //MetaMask selects 1 which is for Mainnet
       nonce,
     });
 
@@ -146,6 +151,9 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setToken(null);
     localStorage.removeItem('token');
+    localStorage.removeItem('userType');
+    localStorage.removeItem('siwe-nonce');
+    localStorage.removeItem('siwe-nonceToken');
     setUser(null);
   };
 

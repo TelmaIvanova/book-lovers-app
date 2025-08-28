@@ -35,6 +35,8 @@ const userSchema = new mongoose.Schema({
     default: 'regular',
     immutable: true,
   },
+  contactInfo: { type: String },
+  booksCount: { type: Number, default: 0 },
 });
 
 const ethereumUserSchema = new mongoose.Schema({
@@ -47,12 +49,14 @@ const ethereumUserSchema = new mongoose.Schema({
   email: {
     type: String,
     unique: true,
+    sparse: true,
     lowercase: true,
     trim: true,
   },
   username: {
     type: String,
     unique: true,
+    sparse: true,
     trim: true,
     minlength: 3,
     maxlength: 15,
@@ -76,6 +80,9 @@ const ethereumUserSchema = new mongoose.Schema({
     default: 'ethereum',
     immutable: true,
   },
+  contactInfo: { type: String },
+  booksCount: { type: Number, default: 0 },
+  //rating
 });
 
 userSchema.methods.isPasswordCorrect = async function (

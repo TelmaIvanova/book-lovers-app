@@ -1,6 +1,6 @@
 const { User, EthereumUser } = require('./../models/userModel');
 const { promisify } = require('util');
-const { generateNonce, SiweMessage, ErrorTypes } = require('siwe');
+const { generateNonce, SiweMessage } = require('siwe');
 
 const jwt = require('jsonwebtoken');
 const catchAsync = require('./../utils/catchAsync');
@@ -104,16 +104,16 @@ exports.verify = catchAsync(async (req, res) => {
   } catch (e) {
     console.error(e);
 
-    const status = [
-      ErrorTypes.EXPIRED_MESSAGE,
-      ErrorTypes.INVALID_SIGNATURE,
-    ].includes(e)
-      ? e === ErrorTypes.EXPIRED_MESSAGE
-        ? 440
-        : 422
-      : 500;
+    let status = 500;
+    let message = e.message || 'Unknown error';
 
-    res.status(status).json({ message: e.message });
+    if (e.type === 'EXPIRED_MESSAGE') {
+      status = 440;
+    } else if (e.type === 'INVALID_SIGNATURE') {
+      status = 422;
+    }
+
+    res.status(status).json({ message });
   }
 });
 
@@ -144,7 +144,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   }
 
   req.user = user;
-
+  req.userId = user._id;
   next();
 });
 

@@ -1,0 +1,15 @@
+{
+  "addToCartButton": "Добави",
+  "addedToCartMessage": "Успешно добавяне в количката",
+  "alreadyAddedMessage": "Вече е добавена в количката",
+  "title": "Количка",
+  "loading": "Зареждане на количката...",
+  "empty": "Количката е празна.",
+  "physical": "Физически книги",
+  "ebooks": "Електронни книги",
+  "remove": "Премахни",
+  "checkoutPhysical": "Поръчай",
+  "checkoutEbooks": "Плати с ETH",
+  "total": "Общо",
+  "noDelivery": "без доставка"
+}

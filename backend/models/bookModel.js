@@ -19,11 +19,6 @@ const bookSchema = new mongoose.Schema({
       min: 0,
       required: true,
     },
-    currency: {
-      type: String,
-      enum: ['BGN', 'EUR', 'ETH'],
-      required: true,
-    },
     isFree: {
       type: Boolean,
       default: false,
@@ -33,7 +28,16 @@ const bookSchema = new mongoose.Schema({
       default: false,
     },
   },
-  uploadedBy: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  seller: {
+    type: Schema.Types.ObjectId,
+    required: true,
+    refPath: 'sellerModel',
+  },
+  sellerModel: {
+    type: String,
+    required: true,
+    enum: ['User', 'EthereumUser'],
+  },
   isbn: {
     type: String,
     required: [true, 'A book must contain an ISBN!'],

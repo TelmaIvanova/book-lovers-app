@@ -57,4 +57,6 @@ router.post(
   userController.createUser
 );
 
+router.get('/:id/seller', userController.getSellerById);
+
 module.exports = router;

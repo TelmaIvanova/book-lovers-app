@@ -3,6 +3,7 @@ import DarkModeToggle from '../components/DarkModeToggle';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
+import CartIcon from './CartIcon';
 
 const Navbar = () => {
   const { isAuthenticated, user, logout } = useAuth();
@@ -61,15 +62,6 @@ const Navbar = () => {
                 {t('books')}
               </Link>
             </li>
-            <li className='nav-item'>
-              <Link
-                className='nav-link'
-                to='/about'
-                onClick={() => setIsOpen(false)}
-              >
-                {t('about')}
-              </Link>
-            </li>
             {!isAuthenticated ? (
               <>
                 <li className='nav-item'>
@@ -102,7 +94,16 @@ const Navbar = () => {
                     {t('addBook')}
                   </Link>
                 </li>
-                {user?.data?.user?.userType === 'regular' ? (
+                <li className='nav-item'>
+                  <Link
+                    className='nav-link'
+                    to='/orders'
+                    onClick={() => setIsOpen(false)}
+                  >
+                    {t('orders:title')}
+                  </Link>
+                </li>
+                {user?.userType === 'regular' ? (
                   <li className='nav-item'>
                     <Link
                       className='nav-link'
@@ -123,7 +124,7 @@ const Navbar = () => {
                     </Link>
                   </li>
                 )}
-                {user?.data?.user?.role === 'admin' && (
+                {user?.role === 'admin' && (
                   <li className='nav-item'>
                     <Link
                       className='nav-link'
@@ -149,7 +150,7 @@ const Navbar = () => {
             )}
           </ul>
         </div>
-
+        <CartIcon />
         <select
           className='form-select form-select-sm me-3'
           value={language}
@@ -159,7 +160,6 @@ const Navbar = () => {
           <option value='en'>English</option>
           <option value='bg'>Български</option>
         </select>
-
         <DarkModeToggle />
       </div>
     </nav>

@@ -33,7 +33,11 @@ const Login = () => {
       await loginWithEthereum();
       navigate('/ethereumProfile');
     } catch (err) {
-      setError(err.message || t('error.ethereum'));
+      if (err.code === 'ACTION_REJECTED' || err.code === 4001) {
+        setError(t('error.rejected'));
+      } else {
+        setError(err.message || t('error.ethereum'));
+      }
     }
   };
 

@@ -3,8 +3,6 @@ import { initReactI18next } from 'react-i18next';
 
 import enNavbar from './locales/en/navbar.json';
 import bgNavbar from './locales/bg/navbar.json';
-import enAbout from './locales/en/about.json';
-import bgAbout from './locales/bg/about.json';
 import enAddBook from './locales/en/addBook.json';
 import bgAddBook from './locales/bg/addBook.json';
 import enBook from './locales/en/books.json';
@@ -23,18 +21,21 @@ import enProfile from './locales/en/profile.json';
 import bgProfile from './locales/bg/profile.json';
 import enRegister from './locales/en/registration.json';
 import bgRegister from './locales/bg/registration.json';
-import enTipsAndTricks from './locales/en/tipsAndTricksForRating.json';
-import bgTipsAndTricks from './locales/bg/tipsAndTricksForRating.json';
 import enUserDetails from './locales/en/userDetails.json';
 import bgUserDetails from './locales/bg/userDetails.json';
 import enUsers from './locales/en/users.json';
 import bgUsers from './locales/bg/users.json';
+import enShoppingCart from './locales/en/shoppingCart.json';
+import bgShoppingCart from './locales/bg/shoppingCart.json';
+import enCheckout from './locales/en/checkout.json';
+import bgCheckout from './locales/bg/checkout.json';
+import enOrders from './locales/en/orders.json';
+import bgOrders from './locales/bg/orders.json';
 
 i18n.use(initReactI18next).init({
   resources: {
     en: {
       navbar: enNavbar,
-      about: enAbout,
       addBook: enAddBook,
       book: enBook,
       bookDetails: enBookDetails,
@@ -44,13 +45,14 @@ i18n.use(initReactI18next).init({
       login: enLogin,
       profile: enProfile,
       register: enRegister,
-      tipsAndTricks: enTipsAndTricks,
       userDetails: enUserDetails,
-      users: enUsers, 
+      users: enUsers,
+      shoppingCart: enShoppingCart,
+      checkout: enCheckout,
+      orders: enOrders,
     },
     bg: {
       navbar: bgNavbar,
-      about: bgAbout,
       addBook: bgAddBook,
       book: bgBook,
       bookDetails: bgBookDetails,
@@ -60,17 +62,18 @@ i18n.use(initReactI18next).init({
       login: bgLogin,
       profile: bgProfile,
       register: bgRegister,
-      tipsAndTricks: bgTipsAndTricks,
       userDetails: bgUserDetails,
       users: bgUsers,
+      shoppingCart: bgShoppingCart,
+      checkout: bgCheckout,
+      orders: bgOrders,
     },
   },
-  lng: localStorage.getItem('language') || 'en',
-  fallbackLng: 'en',
+  lng: localStorage.getItem('language') || 'bg',
+  fallbackLng: 'bg',
   ns: [
     'navbar',
     'auth',
-    'about',
     'addBook',
     'book',
     'bookDetails',
@@ -80,11 +83,12 @@ i18n.use(initReactI18next).init({
     'login',
     'profile',
     'register',
-    'tipsAndTricks',
     'userDetails',
     'users',
+    'shoppingCart',
+    'checkout',
+    'orders',
   ],
-  defaultNS: 'auth',
   interpolation: { escapeValue: false },
 });
 

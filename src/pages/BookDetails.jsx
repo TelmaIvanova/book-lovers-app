@@ -3,9 +3,11 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
+import AddToCartButton from '../components/AddToCartButton';
 
 const BookDetails = () => {
   const { t } = useTranslation('bookDetails');
+  const [seller, setSeller] = useState('');
   const { id } = useParams();
   const navigate = useNavigate();
   const [book, setBook] = useState(null);
@@ -27,6 +29,17 @@ const BookDetails = () => {
         const data = await res.json();
         setBook(data.data.book);
         setFormData(data.data.book);
+        try {
+          const sellerRes = await fetch(
+            `/api/books/${data.data.book._id}/seller`
+          );
+          if (sellerRes.ok) {
+            const sellerData = await sellerRes.json();
+            setSeller(sellerData.seller);
+          }
+        } catch (err) {
+          console.error(err);
+        }
       } catch (error) {
         console.error(error);
       }
@@ -56,6 +69,11 @@ const BookDetails = () => {
       setEditingField(null);
     }
   };
+
+  const canEditPrice =
+    user &&
+    (user._id?.toString() === book?.seller?.toString() ||
+      user.role === 'admin');
 
   const handleRatingUpdate = async () => {
     if (!newRating || newRating < 1 || newRating > 5) {
@@ -89,15 +107,12 @@ const BookDetails = () => {
     }
   };
 
-  const handleBuy = async () => {};
-
   const handleDelete = async () => {
-    if (user?.data?.user?.role !== 'admin') return;
     if (!window.confirm(t('delete.confirm'))) return;
 
     try {
       const res = await deleteBook(id);
-      if (res?.status === 204) {
+      if (res?.status === 204 || res?.success) {
         alert(t('delete.success'));
         navigate('/books');
       }
@@ -144,8 +159,47 @@ const BookDetails = () => {
           height: 'auto',
           display: 'block',
           margin: '0 auto 1rem auto',
+          cursor: 'pointer',
         }}
+        onClick={() => handleEdit('coverImage')}
       />
+
+      {editingField === 'coverImage' && (
+        <input
+          type='file'
+          accept='image/*'
+          className='form-control mt-2'
+          onChange={async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            try {
+              const form = new FormData();
+              form.append('coverImage', file);
+
+              const res = await fetch(`/api/books/${id}`, {
+                method: 'PATCH',
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+                body: form,
+              });
+
+              if (!res.ok) throw new Error('Failed to update cover image');
+              const updated = await res.json();
+
+              setBook(updated.data.book);
+              setFormData(updated.data.book);
+            } catch (err) {
+              console.error(err);
+              alert(t('error.coverUpload'));
+            } finally {
+              setEditingField(null);
+            }
+          }}
+          autoFocus
+        />
+      )}
+
       <h1 className='mb-4'>
         {editingField === 'title' ? (
           <input
@@ -164,7 +218,7 @@ const BookDetails = () => {
       <h2 className='mb-3'>
         {(() => {
           const p = formData.price ?? book.price;
-          const editablePrice = p && !p.isFree && !p.isExchange;
+          const editablePrice = p && !p.isFree && !p.isExchange && canEditPrice;
 
           if (editingField === 'price' && editablePrice) {
             return (
@@ -205,27 +259,9 @@ const BookDetails = () => {
                   }}
                   autoFocus
                 />
-                <select
-                  name='currency'
-                  className='form-select'
-                  style={{ width: '100px' }}
-                  value={formData.price?.currency ?? 'BGN'}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      price: {
-                        ...(prev.price || {}),
-                        isFree: false,
-                        isExchange: false,
-                        currency: e.target.value,
-                      },
-                    }))
-                  }
-                >
-                  <option value='BGN'>BGN</option>
-                  <option value='EUR'>EUR</option>
-                  <option value='ETH'>ETH</option>
-                </select>
+                <span style={{ alignSelf: 'center' }}>
+                  {formData.price?.currency ?? book.price?.currency}
+                </span>
               </div>
             );
           }
@@ -234,7 +270,7 @@ const BookDetails = () => {
             <span
               onClick={() => {
                 const cur = formData.price ?? book.price;
-                if (cur?.isFree || cur?.isExchange) return;
+                if (cur?.isFree || cur?.isExchange || !canEditPrice) return;
                 handleEdit('price');
               }}
               style={{ cursor: editablePrice ? 'pointer' : 'default' }}
@@ -244,6 +280,7 @@ const BookDetails = () => {
           );
         })()}
       </h2>
+
       <table
         style={{
           margin: '0 auto',
@@ -454,22 +491,15 @@ const BookDetails = () => {
           </tr>
           <tr>
             <td style={{ fontWeight: 'bold' }}>{t('seller')}:</td>
-            <td colSpan='3'>
-              <Link to={`/profile/${book.seller?._id || 'dummy-id'}`}>
-                {book.seller?.name || 'Dummy Seller'}
-              </Link>
-            </td>
+            <td colSpan='3'>{seller || '—'}</td>
           </tr>
         </tbody>
       </table>
-
       <div className='mt-4'>
-        <button className='btn btn-primary' onClick={handleBuy}>
-          {t('buy')}
-        </button>
+        <AddToCartButton book={book} />
       </div>
-
-      {user?.data?.user?.role === 'admin' && (
+      {(user?._id?.toString() === book?.seller?.toString() ||
+        user?.role === 'admin') && (
         <div className='mt-4'>
           <button className='btn btn-danger' onClick={handleDelete}>
             {t('delete.button')}

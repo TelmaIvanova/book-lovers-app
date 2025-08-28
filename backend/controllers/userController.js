@@ -1,6 +1,8 @@
 const { User } = require('./../models/userModel');
+const Book = require('./../models/bookModel');
 const catchAsync = require('../utils/catchAsync');
 const APIFeatures = require('./../utils/APIFeatures');
+const AppError = require('./../utils/appError');
 
 exports.getAllUsers = catchAsync(async (req, res, next) => {
   const features = new APIFeatures(User.find(), req.query).filter().paginate();
@@ -85,6 +87,41 @@ exports.updateUser = catchAsync(async (req, res) => {
     status: 'success',
     data: {
       user,
+    },
+  });
+});
+
+exports.getSellerById = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+
+  const user = await User.findById(id);
+  if (!user) {
+    return next(new AppError('Seller not found', 404));
+  }
+
+  let displayName = '';
+  if (user.firstName || user.lastName) {
+    displayName = `${user.firstName || ''} ${user.lastName || ''}`.trim();
+  } else if (user.username) {
+    displayName = user.username;
+  } else {
+    displayName = user.ethAddress;
+  }
+
+  const contact = user.contact || null;
+
+  const booksCount = await Book.countDocuments({ seller: user._id });
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      seller: {
+        id: user._id,
+        displayName,
+        ethAddress: user.ethAddress,
+        contact,
+        booksCount,
+      },
     },
   });
 });

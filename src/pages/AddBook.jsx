@@ -23,14 +23,14 @@ const AddBook = () => {
   const [coverType, setCoverType] = useState('');
   const [price, setPrice] = useState({
     amount: '',
-    currency: 'BGN',
+    currency: '',
     isFree: false,
     isExchange: false,
   });
   const [publisher, setPublisher] = useState('');
 
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const token = localStorage.getItem('token');
 
   useEffect(() => {
@@ -40,18 +40,20 @@ const AddBook = () => {
   }, [isAuthenticated, navigate]);
 
   const handlePriceChange = (field, value) => {
-    setPrice((prev) => ({ ...prev, [field]: value }));
+    setPrice((prev) => ({
+      ...prev,
+      [field]: field === 'amount' ? Number(value) : value,
+    }));
   };
 
   const appendPriceToFormData = (formData, price) => {
-    let amountToSend = 0;
-
     if (!price.isFree && !price.isExchange) {
-      amountToSend = Number(price.amount) || 0;
+      const amountToSend = Number(price.amount) || 0;
+      formData.append('price.amount', Math.round(amountToSend * 100));
+    } else {
+      formData.append('price.amount', 0);
     }
 
-    formData.append('price.amount', amountToSend);
-    formData.append('price.currency', price.currency);
     formData.append('price.isFree', price.isFree);
     formData.append('price.isExchange', price.isExchange);
   };
@@ -64,7 +66,7 @@ const AddBook = () => {
     formData.append('isbn', isbn);
     formData.append('publishedYear', publishedYear);
     if (coverFile) {
-      formData.append('photo', coverFile);
+      formData.append('coverImage', coverFile);
     }
     formData.append('publisher', publisher);
     formData.append('genre', genre);
@@ -79,7 +81,7 @@ const AddBook = () => {
     formData.append('summary', summary);
     formData.append('comment', comment);
     formData.append('newVote', rating);
-    appendPriceToFormData(formData, price);
+    appendPriceToFormData(formData, price, user.userType);
     const res = await fetch('/api/books', {
       method: 'POST',
       headers: {
@@ -176,23 +178,17 @@ const AddBook = () => {
                   disabled={price.isFree || price.isExchange}
                   required={!price.isFree && !price.isExchange}
                 />
-                <select
-                  className='form-select'
+                <span
+                  className='input-group-text'
                   style={{
                     borderTopLeftRadius: 0,
                     borderBottomLeftRadius: 0,
                     width: '100px',
+                    textAlign: 'center',
                   }}
-                  value={price.currency}
-                  onChange={(e) =>
-                    handlePriceChange('currency', e.target.value)
-                  }
-                  disabled={price.isFree || price.isExchange}
                 >
-                  <option value='BGN'>BGN</option>
-                  <option value='EUR'>EUR</option>
-                  <option value='ETH'>ETH</option>
-                </select>
+                  <span className='input-group-text'>EUR</span>
+                </span>
               </div>
             </div>
           </>

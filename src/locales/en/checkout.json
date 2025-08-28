@@ -1,0 +1,9 @@
+{
+  "title": "Checkout",
+  "emptyCart": "Your cart is empty.",
+  "subtotal": "Subtotal",
+  "shipping": "Shipping (fixed)",
+  "total": "Total",
+  "placeOrder": "Place order",
+  "currency": "EUR"
+}

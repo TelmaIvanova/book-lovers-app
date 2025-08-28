@@ -12,6 +12,9 @@ router
     authController.protect,
     bookController.addBook
   );
+router.patch('/:id/rate', authController.protect, bookController.rateBook);
+router.get('/:id/seller', bookController.getSellerInfo);
+router.route('/:id/sell').post(authController.protect, bookController.sellBook);
 router
   .route('/:id')
   .get(bookController.getBook)
@@ -21,11 +24,6 @@ router
     authController.protect,
     bookController.updateBook
   )
-  .delete(
-    authController.protect,
-    authController.restrictTo('admin'),
-    bookController.deleteBook
-  );
-router.patch('/:id/rate', authController.protect, bookController.rateBook);
+  .delete(authController.protect, bookController.deleteBook);
 
 module.exports = router;

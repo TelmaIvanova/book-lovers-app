@@ -1,0 +1,26 @@
+{
+  "title": "My Orders",
+  "loading": "Loading orders...",
+  "empty": "You have no orders yet.",
+  "orderId": "Order {{id}}",
+  "status": "Status",
+  "seller": "Seller",
+  "payment": "Payment",
+  "txHash": "Ethereum transaction",
+  "createdAt": "Created at",
+  "type": {
+    "OnPaper": "Book on paper",
+    "E-book": "E-book"
+  },
+  "statusValues": {
+    "pending": "Pending",
+    "paid": "Paid",
+    "shipped": "Shipped",
+    "delivered": "Delivered",
+    "cancelled": "Cancelled"
+  },
+  "paymentMethods": {
+    "cash": "Cash on delivery",
+    "eth": "Ethereum"
+  }
+}

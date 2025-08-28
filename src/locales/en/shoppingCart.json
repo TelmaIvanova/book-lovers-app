@@ -1,0 +1,15 @@
+{
+  "addToCartButton": "Add",
+  "addedToCartMessage": "Successfully added to cart",
+  "alreadyAddedMessage": "Already added in cart",
+  "title": "Shopping Cart",
+  "loading": "Loading your cart...",
+  "empty": "Your cart is empty.",
+  "physical": "Physical books",
+  "ebooks": "E-books",
+  "remove": "Remove",
+  "checkoutPhysical": "Checkout Physical",
+  "checkoutEbooks": "Pay with ETH",
+  "total": "Total",
+  "noDelivery": "without delivery"
+}

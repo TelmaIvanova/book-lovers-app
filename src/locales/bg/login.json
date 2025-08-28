@@ -14,6 +14,7 @@
   },
   "error": {
     "default": "Грешен имейл или парола!",
-    "ethereum": "Грешка при вход с Ethereum"
+    "ethereum": "Грешка при вход с Ethereum",
+    "rejected": "Отказахте да подпишете съобщението в MetaMask."
   }
 }

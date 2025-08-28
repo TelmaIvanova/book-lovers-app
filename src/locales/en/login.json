@@ -14,6 +14,7 @@
   },
   "error": {
     "default": "Incorrect email/password!",
-    "ethereum": "Ethereum login failed"
+    "ethereum": "Ethereum login failed",
+    "rejected": "You rejected to sign the message in MetaMask."
   }
 }

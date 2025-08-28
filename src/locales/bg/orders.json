@@ -1,0 +1,26 @@
+{
+  "title": "Моите поръчки",
+  "loading": "Зареждане на поръчките...",
+  "empty": "Нямате направени поръчки.",
+  "orderId": "Поръчка {{id}}",
+  "status": "Статус",
+  "seller": "Продавач",
+  "payment": "Плащане",
+  "txHash": "Ethereum транзакция",
+  "createdAt": "Създадена на",
+  "type": {
+    "OnPaper": "Книга на хартия",
+    "E-book": "Електронна книга"
+  },
+  "statusValues": {
+    "pending": "В изчакване",
+    "paid": "Платена",
+    "shipped": "Изпратена",
+    "delivered": "Доставена",
+    "cancelled": "Отменена"
+  },
+  "paymentMethods": {
+    "cash": "Наложен платеж",
+    "eth": "Ethereum"
+  }
+}
