@@ -31,6 +31,10 @@ import enCheckout from './locales/en/checkout.json';
 import bgCheckout from './locales/bg/checkout.json';
 import enOrders from './locales/en/orders.json';
 import bgOrders from './locales/bg/orders.json';
+import bgMyBooks from './locales/bg/myBooks.json';
+import enMyBooks from './locales/en/myBooks.json';
+import bgSeller from './locales/bg/seller.json';
+import enSeller from './locales/en/seller.json';
 
 i18n.use(initReactI18next).init({
   resources: {
@@ -50,6 +54,8 @@ i18n.use(initReactI18next).init({
       shoppingCart: enShoppingCart,
       checkout: enCheckout,
       orders: enOrders,
+      myBooks: enMyBooks,
+      seller: enSeller,
     },
     bg: {
       navbar: bgNavbar,
@@ -67,6 +73,8 @@ i18n.use(initReactI18next).init({
       shoppingCart: bgShoppingCart,
       checkout: bgCheckout,
       orders: bgOrders,
+      myBooks: bgMyBooks,
+      seller: bgSeller,
     },
   },
   lng: localStorage.getItem('language') || 'bg',
@@ -88,6 +96,8 @@ i18n.use(initReactI18next).init({
     'shoppingCart',
     'checkout',
     'orders',
+    'myBooks',
+    'seller',
   ],
   interpolation: { escapeValue: false },
 });

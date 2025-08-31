@@ -14,6 +14,9 @@ import Register from './pages/Registration';
 import ShoppingCart from './pages/ShoppingCart';
 import Checkout from './pages/Checkout';
 import Orders from './pages/Orders';
+import OrderDetails from './pages/OrderDetails';
+import MyBooks from './pages/MyBooks';
+import Seller from './pages/Seller';
 
 const App = () => (
   <>
@@ -23,11 +26,14 @@ const App = () => (
         <Route path='/' element={<Home />} />
         <Route path='/books' element={<Books />} />
         <Route path='/books/:id' element={<BookDetails />} />
+        <Route path='/books/my-books' element={<MyBooks />} />
         <Route path='/add-book' element={<AddBook />} />
         <Route path='/cart' element={<ShoppingCart />} />
         <Route path='/profile' element={<Profile />} />
         <Route path='/checkout' element={<Checkout />} />
         <Route path='/orders' element={<Orders />} />
+        <Route path='/sellers/:id' element={<Seller />} />
+        <Route path='/orders/:id' element={<OrderDetails />} />
         <Route path='/ethereumProfile' element={<EthereumProfile />} />
         <Route path='/users' element={<Users />} />
         <Route path='/users/:id' element={<UserDetails />} />

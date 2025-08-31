@@ -12,8 +12,6 @@ const BookDetails = () => {
   const navigate = useNavigate();
   const [book, setBook] = useState(null);
   const [editingField, setEditingField] = useState(null);
-  const [editingRating, setEditingRating] = useState(false);
-  const [newRating, setNewRating] = useState('');
   const [formData, setFormData] = useState({});
   const { user, updateBook, token, deleteBook } = useAuth();
 
@@ -31,7 +29,7 @@ const BookDetails = () => {
         setFormData(data.data.book);
         try {
           const sellerRes = await fetch(
-            `/api/books/${data.data.book._id}/seller`
+            `/api/sellers/${data.data.book.seller}`
           );
           if (sellerRes.ok) {
             const sellerData = await sellerRes.json();
@@ -75,38 +73,6 @@ const BookDetails = () => {
     (user._id?.toString() === book?.seller?.toString() ||
       user.role === 'admin');
 
-  const handleRatingUpdate = async () => {
-    if (!newRating || newRating < 1 || newRating > 5) {
-      alert(t('ratingEdit.alertInvalid'));
-      return;
-    }
-
-    try {
-      const res = await fetch(`/api/books/${id}/rate`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ newVote: newRating }),
-      });
-
-      if (res.ok) {
-        const updatedBook = await res.json();
-        setBook(updatedBook.data.book);
-        setEditingRating(false);
-        setNewRating('');
-        alert(t('ratingEdit.success'));
-      } else {
-        const errorData = await res.json();
-        alert(errorData.message || t('ratingEdit.failure'));
-      }
-    } catch (error) {
-      console.error('Error updating rating:', error);
-      alert(t('ratingEdit.error'));
-    }
-  };
-
   const handleDelete = async () => {
     if (!window.confirm(t('delete.confirm'))) return;
 
@@ -130,7 +96,8 @@ const BookDetails = () => {
     if (p.isFree) return t('price.free');
     if (p.isExchange) return t('price.exchange');
 
-    return `${p.amount.toFixed(2)}${p.currency ? ' ' + p.currency : ''}`;
+    const amt = (p.amount / 100).toFixed(2);
+    return `${amt} EUR`;
   })();
 
   const statusLabel = t(`statusOptions.${formData.status ?? book.status}`, {
@@ -216,71 +183,70 @@ const BookDetails = () => {
         )}
       </h1>
       <h2 className='mb-3'>
-        {(() => {
-          const p = formData.price ?? book.price;
-          const editablePrice = p && !p.isFree && !p.isExchange && canEditPrice;
+        {editingField === 'price' ? (
+          <div
+            style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}
+          >
+            <input
+              type='number'
+              step='0.01'
+              className='form-control'
+              style={{ width: '120px' }}
+              defaultValue={(formData.price?.amount ?? book.price.amount) / 100}
+              autoFocus
+              onBlur={async (e) => {
+                const eur = parseFloat(e.target.value.replace(',', '.'));
+                const cents = isNaN(eur) ? 0 : Math.round(eur * 100);
 
-          if (editingField === 'price' && editablePrice) {
-            return (
-              <div
-                style={{
-                  display: 'flex',
-                  gap: '8px',
-                  justifyContent: 'center',
-                }}
-                onBlur={(e) => {
-                  if (!e.currentTarget.contains(e.relatedTarget)) {
-                    handleBlur('price');
-                  }
-                }}
-              >
-                <input
-                  type='number'
-                  name='amount'
-                  className='form-control'
-                  style={{ width: '120px' }}
-                  value={
-                    formData.price?.amount === undefined ||
-                    formData.price?.amount === null
-                      ? ''
-                      : formData.price.amount
-                  }
-                  onChange={(e) => {
-                    const raw = e.target.value;
-                    setFormData((prev) => ({
-                      ...prev,
-                      price: {
-                        ...(prev.price || {}),
-                        isFree: false,
-                        isExchange: false,
-                        amount: raw === '' ? undefined : Number(raw),
-                      },
-                    }));
-                  }}
-                  autoFocus
-                />
-                <span style={{ alignSelf: 'center' }}>
-                  {formData.price?.currency ?? book.price?.currency}
-                </span>
-              </div>
-            );
-          }
-
-          return (
-            <span
-              onClick={() => {
-                const cur = formData.price ?? book.price;
-                if (cur?.isFree || cur?.isExchange || !canEditPrice) return;
-                handleEdit('price');
+                try {
+                  await updateBook(id, {
+                    price: {
+                      amount: cents,
+                      currency: 'EUR',
+                      isFree: false,
+                      isExchange: false,
+                    },
+                  });
+                  setBook((prev) => ({
+                    ...prev,
+                    price: {
+                      amount: cents,
+                      currency: 'EUR',
+                      isFree: false,
+                      isExchange: false,
+                    },
+                  }));
+                  setFormData((prev) => ({
+                    ...prev,
+                    price: {
+                      amount: cents,
+                      currency: 'EUR',
+                      isFree: false,
+                      isExchange: false,
+                    },
+                  }));
+                } catch (err) {
+                  console.error(err);
+                } finally {
+                  setEditingField(null);
+                }
               }}
-              style={{ cursor: editablePrice ? 'pointer' : 'default' }}
-            >
-              {priceLabel}
-            </span>
-          );
-        })()}
+            />
+            <span style={{ alignSelf: 'center' }}>EUR</span>
+          </div>
+        ) : (
+          <span
+            onClick={() => {
+              const cur = formData.price ?? book.price;
+              if (cur?.isFree || cur?.isExchange || !canEditPrice) return;
+              handleEdit('price');
+            }}
+            style={{ cursor: canEditPrice ? 'pointer' : 'default' }}
+          >
+            {priceLabel}
+          </span>
+        )}
       </h2>
-
       <table
         style={{
           margin: '0 auto',
@@ -491,7 +457,13 @@ const BookDetails = () => {
           </tr>
           <tr>
             <td style={{ fontWeight: 'bold' }}>{t('seller')}:</td>
-            <td colSpan='3'>{seller || '—'}</td>
+            <td colSpan='3'>
+              {seller?.displayName ? (
+                <Link to={`/sellers/${seller._id}`}>{seller.displayName}</Link>
+              ) : (
+                '—'
+              )}
+            </td>
           </tr>
         </tbody>
       </table>

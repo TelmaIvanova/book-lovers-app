@@ -1,32 +1,72 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { fetchSeller } from '../api/sellerApi';
 import { Helmet } from 'react-helmet';
 import AddToCartButton from '../components/AddToCartButton';
+import SellerRating from '../components/SellerRating';
 import { useAuth } from '../context/AuthContext';
 
-const Books = () => {
-  const { t } = useTranslation(['book', 'bookDetails']);
+export default function Seller() {
+  const { id } = useParams();
+  const [seller, setSeller] = useState(null);
   const [books, setBooks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { t } = useTranslation(['seller', 'book', 'bookDetails']);
   const { token } = useAuth();
+
   useEffect(() => {
-    fetch('/api/books', {
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
-    })
-      .then((response) => response.json())
-      .then((data) => setBooks(data.data.books))
-      .catch((error) => console.error(t('book:error.fetch'), error));
-  }, [t, token]);
+    async function load() {
+      try {
+        const data = await fetchSeller(id, token);
+        setSeller(data.seller);
+        setBooks(data.books || []);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    if (id) load();
+  }, [id, token]);
+
+  if (loading) return <p>{t('seller:loading')}</p>;
+  if (!seller) return <p>{t('seller:notFound')}</p>;
+
+  const displayName =
+    seller.firstName && seller.lastName
+      ? `${seller.firstName} ${seller.lastName}`
+      : seller.username || `Ethereum ${t('seller:user')}`;
 
   return (
     <div className='container mt-4'>
       <Helmet>
-        <title>{t('book:title')}</title>
+        <title>{t('title')}</title>
       </Helmet>
+      <h1>{displayName}</h1>
 
-      <h1 className='mb-4'>{t('book:heading')}</h1>
+      <SellerRating sellerId={seller._id} token={token} />
+
+      {seller.contact && (
+        <p>
+          <strong>{t('seller:contact')}:</strong> {seller.contact}
+        </p>
+      )}
+      <p>
+        <strong>{t('seller:booksOffered')}:</strong> {seller.booksCount ?? 0}
+      </p>
+
+      <h2 className='mt-5'>{t('book:heading')}</h2>
       <div className='row'>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px',
+            width: '100%',
+          }}
+        >
+          {books.length === 0 && <p>{t('book:noBooks')}</p>}
           {books.map((book) => {
             const isEbook = book.type === 'E-book';
             const formatLabel = isEbook
@@ -97,6 +137,7 @@ const Books = () => {
                       : book.summary}
                   </p>
                 </div>
+
                 <div
                   style={{
                     display: 'flex',
@@ -134,9 +175,6 @@ const Books = () => {
           })}
         </div>
       </div>
-      <br />
     </div>
   );
-};
-
-export default Books;
+}

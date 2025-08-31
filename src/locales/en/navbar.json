@@ -6,5 +6,6 @@
   "login": "Login",
   "register": "Register",
   "users": "Users",
-  "logout": "Logout"
+  "logout": "Logout",
+  "myBooks": "My books"
 }

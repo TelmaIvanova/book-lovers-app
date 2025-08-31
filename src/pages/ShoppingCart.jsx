@@ -2,7 +2,9 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';
-const { ethers } = require('ethers');
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import PayWithEthereum from './../components/PayWithEthereum';
 
 export default function ShoppingCart() {
   const {
@@ -14,56 +16,7 @@ export default function ShoppingCart() {
   } = useCart();
   const { t } = useTranslation('shoppingCart');
   const { token } = useAuth();
-
-  async function handlePayWithEth() {
-    try {
-      if (!window.ethereum) throw new Error('No wallet');
-
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-
-      const from = await signer.getAddress();
-
-      const prep = await fetch('/api/checkout/prepare', {
-        headers: { Authorization: `Bearer ${token}` },
-      }).then((r) => r.json());
-
-      const amountWei = ethers.parseEther(prep.amountETH.toString());
-
-      const net = await provider.getNetwork();
-      if (net.chainId !== 11155111n) {
-        throw new Error('Please switch to Sepolia network in MetaMask');
-      }
-
-      const tx = await signer.sendTransaction({
-        to: prep.sellers[0].address,
-        value: amountWei,
-      });
-
-      console.log('Transaction hash:', tx.hash);
-
-      const receipt = await tx.wait();
-      console.log('Transaction receipt:', receipt);
-
-      const result = await fetch('/api/checkout/ebooks', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          txHash: tx.hash,
-          amountETH: prep.amountETH,
-          rateUsed: prep.rateUsed,
-        }),
-      }).then((r) => r.json());
-
-      alert(`Ebook order ${result.status}`);
-    } catch (err) {
-      console.error(err);
-      alert(err.message);
-    }
-  }
+  const navigate = useNavigate();
 
   if (loading) {
     return (
@@ -85,10 +38,26 @@ export default function ShoppingCart() {
 
   const money = (m) => (m / 100).toFixed(2);
 
-  const approxTotal = [...physicalItems, ...ebookItems].reduce(
-    (sum, it) => sum + it.unitPriceMinor,
-    0
+  const getSellerId = (seller) =>
+    typeof seller === 'object' ? seller._id?.toString() : seller?.toString();
+
+  const uniqueSellersPhysical = new Set(
+    physicalItems.map((it) => getSellerId(it.seller))
   );
+  const deliveryCount = uniqueSellersPhysical.size;
+
+  const groupBySeller = (items) => {
+    const groups = {};
+    items.forEach((it) => {
+      const id = getSellerId(it.seller);
+      if (!groups[id]) groups[id] = { seller: it.seller, items: [] };
+      groups[id].items.push(it);
+    });
+    return Object.values(groups);
+  };
+
+  const physicalGroups = groupBySeller(physicalItems);
+  const ebookGroups = groupBySeller(ebookItems);
 
   return (
     <div className='container mt-4'>
@@ -97,68 +66,107 @@ export default function ShoppingCart() {
       </Helmet>
       <h1>{t('title')}</h1>
 
-      <h3>{t('physical')}</h3>
-      {!physicalItems.length && <p>{t('noPhysical')}</p>}
-      <ul className='list-group mb-3'>
-        {physicalItems.map((it) => (
-          <li
-            key={it._id}
-            className='list-group-item d-flex justify-content-between align-items-center'
-          >
-            <div>
-              <div>{it.title}</div>
-              <small>{money(it.unitPriceMinor)} EUR</small>
+      {physicalGroups.length > 0 && (
+        <>
+          <h3>{t('physical')}</h3>
+          {physicalGroups.map((group, idx) => {
+            const sellerName =
+              typeof group.seller === 'object'
+                ? group.seller.firstName || group.seller.username || 'Seller'
+                : 'Seller';
+            return (
+              <div key={idx} className='mb-3'>
+                <div className='text-center fw-bold fs-5 mb-2'>
+                  {t('sellerLabel')}:{' '}
+                  <Link to={`/sellers/${getSellerId(group.seller)}`}>
+                    {sellerName}
+                  </Link>
+                </div>
+                <ul className='list-group'>
+                  {group.items.map((it) => (
+                    <li
+                      key={it._id}
+                      className='list-group-item position-relative'
+                    >
+                      <div>
+                        <div>{it.title}</div>
+                        <small>{money(it.unitPriceMinor)} EUR</small>
+                      </div>
+                      <button
+                        className='btn btn-sm btn-outline-danger position-absolute end-0 me-1 top-50 translate-middle-y'
+                        style={{ width: '100px' }}
+                        onClick={() => remove(it._id)}
+                      >
+                        {t('remove')}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
+          {physicalItems.length > 1 && deliveryCount > 1 && (
+            <div className='alert alert-info mt-2'>
+              {t('deliveryInfo', { count: deliveryCount })}
             </div>
-            <button
-              className='btn btn-sm btn-outline-danger'
-              onClick={() => remove(it._id)}
-            >
-              {t('remove')}
-            </button>
-          </li>
-        ))}
-      </ul>
-      {physicalItems.length > 0 && (
-        <button className='btn btn-primary mb-4' onClick={checkoutPhysical}>
-          {t('checkoutPhysical')}
-        </button>
+          )}
+          <button className='btn btn-primary mb-4' onClick={checkoutPhysical}>
+            {t('checkoutPhysical')}
+          </button>
+        </>
       )}
 
-      <h3>{t('ebooks')}</h3>
-      {!ebookItems.length && <p>{t('noEbooks')}</p>}
-      <ul className='list-group mb-3'>
-        {ebookItems.map((it) => (
-          <li
-            key={it._id}
-            className='list-group-item d-flex justify-content-between align-items-center'
-          >
-            <div>
-              <div>{it.title}</div>
-              <small>{money(it.unitPriceMinor)} EUR</small>
-            </div>
-            <button
-              className='btn btn-sm btn-outline-danger'
-              onClick={() => remove(it._id)}
-            >
-              {t('remove')}
-            </button>
-          </li>
-        ))}
-      </ul>
-      {ebookItems.length > 0 && (
-        <button
-          className='btn btn-secondary mb-4'
-          onClick={() => handlePayWithEth(token)}
-        >
-          {t('checkoutEbooks')}
-        </button>
-      )}
+      {ebookGroups.length > 0 && (
+        <>
+          <h3>{t('ebooks')}</h3>
+          {ebookGroups.map((group, idx) => {
+            const sellerObj = group.seller;
+            const sellerName =
+              typeof sellerObj === 'object'
+                ? sellerObj.username ||
+                  `${sellerObj.firstName || ''} ${
+                    sellerObj.lastName || ''
+                  }`.trim() ||
+                  'Seller'
+                : 'Seller';
 
-      <div className='d-flex justify-content-between align-items-center'>
-        <strong>
-          {t('total')}: {money(approxTotal)} EUR ({t('noDelivery')})
-        </strong>
-      </div>
+            return (
+              <div key={idx} className='mb-4'>
+                <div className='text-center fw-bold fs-5 mb-2'>
+                  {t('sellerLabel')}:{' '}
+                  <Link to={`/sellers/${getSellerId(group.seller)}`}>
+                    {sellerName}
+                  </Link>
+                </div>
+                <ul className='list-group mb-2'>
+                  {group.items.map((it) => (
+                    <li
+                      key={it._id}
+                      className='list-group-item position-relative'
+                    >
+                      <div>
+                        <div>{it.title}</div>
+                        <small>{money(it.unitPriceMinor)} EUR</small>
+                      </div>
+                      <button
+                        className='btn btn-sm btn-outline-danger position-absolute end-0 me-1 top-50 translate-middle-y'
+                        style={{ width: '100px' }}
+                        onClick={() => remove(it._id)}
+                      >
+                        {t('remove')}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+                <PayWithEthereum token={token} navigate={navigate}>
+                  {t('checkoutEbooks')}
+                </PayWithEthereum>
+              </div>
+            );
+          })}
+          <div className='alert alert-info mt-2'>{t('ebookInfo')}</div>
+        </>
+      )}
     </div>
   );
 }

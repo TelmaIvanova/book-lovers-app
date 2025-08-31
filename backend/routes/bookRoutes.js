@@ -2,18 +2,18 @@ const express = require('express');
 const bookController = require('./../controllers/bookController');
 const authController = require('./../controllers/authController');
 const router = express.Router();
+const optionalAuth = require('../utils/optionalAuth');
 
 router
   .route('/')
-  .get(bookController.getAllBooks)
+  .get(optionalAuth, bookController.getAllBooks)
   .post(
     bookController.uploadCoverImage,
     bookController.resizeAndUploadCoverImage,
     authController.protect,
     bookController.addBook
   );
-router.patch('/:id/rate', authController.protect, bookController.rateBook);
-router.get('/:id/seller', bookController.getSellerInfo);
+router.get('/my-books', authController.protect, bookController.getMyBooks);
 router.route('/:id/sell').post(authController.protect, bookController.sellBook);
 router
   .route('/:id')

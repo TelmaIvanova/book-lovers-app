@@ -14,7 +14,6 @@ const AddBook = () => {
   const [genre, setGenre] = useState('');
   const [summary, setSummary] = useState('');
   const [comment, setComment] = useState('');
-  const [rating, setRating] = useState(0);
   const [status, setStatus] = useState('');
   const [type, setType] = useState('');
   const [language, setLanguage] = useState('');
@@ -80,7 +79,6 @@ const AddBook = () => {
     }
     formData.append('summary', summary);
     formData.append('comment', comment);
-    formData.append('newVote', rating);
     appendPriceToFormData(formData, price, user.userType);
     const res = await fetch('/api/books', {
       method: 'POST',
@@ -360,17 +358,6 @@ const AddBook = () => {
             value={comment}
             onChange={(e) => setComment(e.target.value)}
           ></textarea>
-        </div>
-        <div className='mb-3'>
-          <label className='form-label'>{t('form.rating')}</label>
-          <input
-            type='number'
-            className='form-control'
-            value={rating}
-            onChange={(e) => setRating(e.target.value)}
-            min='1'
-            max='5'
-          />
         </div>
         <button
           type='submit'

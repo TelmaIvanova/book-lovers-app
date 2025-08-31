@@ -17,7 +17,7 @@
     "paid": "Платена",
     "shipped": "Изпратена",
     "delivered": "Доставена",
-    "cancelled": "Отменена"
+    "cancelled": "Отказана"
   },
   "paymentMethods": {
     "cash": "Наложен платеж",

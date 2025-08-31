@@ -11,5 +11,8 @@
   "checkoutPhysical": "Checkout Physical",
   "checkoutEbooks": "Pay with ETH",
   "total": "Total",
-  "noDelivery": "without delivery"
+  "sellerLabel": "Seller",
+  "noDelivery": "without delivery",
+  "deliveryInfo": "Note that your cart contains books from {{count}} different sellers. This means you will pay {{count}} separate delivery fees.",
+  "ebookInfo": "The book price is listed in euros (EUR). Payment is made in Ethereum (ETH), with the amount calculated at the exchange rate valid at the time of checkout. Note that ETH is volatile and its value may change in real time."
 }

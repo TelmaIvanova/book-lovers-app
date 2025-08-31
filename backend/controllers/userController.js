@@ -105,7 +105,7 @@ exports.getSellerById = catchAsync(async (req, res, next) => {
   } else if (user.username) {
     displayName = user.username;
   } else {
-    displayName = user.ethAddress;
+    displayName = user.ethereumAddress;
   }
 
   const contact = user.contact || null;
@@ -118,7 +118,7 @@ exports.getSellerById = catchAsync(async (req, res, next) => {
       seller: {
         id: user._id,
         displayName,
-        ethAddress: user.ethAddress,
+        ethereumAddress: user.ethereumAddress,
         contact,
         booksCount,
       },

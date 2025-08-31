@@ -59,8 +59,16 @@ exports.resizeAndUploadCoverImage = async (req, res, next) => {
 };
 
 exports.getAllBooks = catchAsync(async (req, res) => {
-  const features = new APIFeatures(Book.find(), req.query).filter().paginate();
-  const books = await features.query;
+  const filter = req.userId ? { seller: { $ne: req.userId } } : {};
+
+  const features = new APIFeatures(Book.find(filter), req.query)
+    .filter()
+    .paginate();
+  let books = await features.query;
+  if (req.user) {
+    const currentUserId = req.user._id.toString();
+    books = books.filter((book) => book.seller.toString() !== currentUserId);
+  }
 
   res.status(200).json({
     results: books.length,
@@ -80,6 +88,16 @@ exports.getBook = catchAsync(async (req, res, next) => {
     data: {
       book,
     },
+  });
+});
+
+exports.getMyBooks = catchAsync(async (req, res, next) => {
+  const books = await Book.find({ seller: req.user._id });
+  console.log(req.user._id);
+  res.status(200).json({
+    status: 'success',
+    results: books.length,
+    data: { books },
   });
 });
 
@@ -180,54 +198,6 @@ exports.updateBook = catchAsync(async (req, res, next) => {
   });
 });
 
-function calculateAverageRating(r1, r2, r3, r4, r5) {
-  const totalVotes = r1 + r2 + r3 + r4 + r5;
-  if (totalVotes === 0) return 0;
-
-  const totalRating = 5 * r5 + 4 * r4 + 3 * r3 + 2 * r2 + 1 * r1;
-  return Math.round((totalRating / totalVotes) * 100) / 100;
-}
-
-exports.rateBook = catchAsync(async (req, res, next) => {
-  const book = await Book.findById(req.params.id);
-  console.log('Received newVote:', req.body.newVote, typeof req.body.newVote);
-
-  if (!book) {
-    return next(new AppError('Book not found!', 404));
-  }
-
-  if (book.votes.includes(req.user.id)) {
-    return next(new AppError('You have already voted for this book!', 403));
-  }
-
-  const { newVote } = req.body;
-
-  if (newVote === 1) book.r1 += 1;
-  if (newVote === 2) book.r2 += 1;
-  if (newVote === 3) book.r3 += 1;
-  if (newVote === 4) book.r4 += 1;
-  if (newVote === 5) book.r5 += 1;
-
-  book.votes.push(req.user.id);
-
-  book.rating = calculateAverageRating(
-    book.r1,
-    book.r2,
-    book.r3,
-    book.r4,
-    book.r5
-  );
-
-  await book.save();
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      book,
-    },
-  });
-});
-
 exports.deleteBook = catchAsync(async (req, res, next) => {
   const book = await Book.findById(req.params.id);
   if (!book) return next(new AppError('Book not found', 404));
@@ -240,37 +210,6 @@ exports.deleteBook = catchAsync(async (req, res, next) => {
   await User.findByIdAndUpdate(book.seller, { $inc: { booksCount: -1 } });
 
   res.status(204).json({ status: 'success' });
-});
-
-exports.getSellerInfo = catchAsync(async (req, res, next) => {
-  const { id } = req.params;
-
-  const book = await Book.findById(id).populate('seller');
-  if (!book) {
-    return next(new AppError('Book not found', 404));
-  }
-
-  const user = book.seller;
-  if (!user) {
-    return next(new AppError('Seller not found', 404));
-  }
-
-  let displayName = '';
-
-  if (user.firstName || user.lastName) {
-    displayName = `${user.firstName || ''} ${user.lastName || ''}`.trim();
-  } else if (user.username) {
-    displayName = user.username;
-  }
-
-  const result = displayName
-    ? `${displayName} (${user.ethAddress})`
-    : user.ethAddress;
-
-  res.status(200).json({
-    status: 'success',
-    seller: result,
-  });
 });
 
 exports.sellBook = catchAsync(async (req, res, next) => {

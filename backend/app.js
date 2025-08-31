@@ -13,10 +13,12 @@ const ethereumUserRoute = require('./routes/ethereumUserRoutes');
 const cartRoutes = require('./routes/cartRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const checkoutRoutes = require('./routes/checkoutRoutes');
+const sellerRoutes = require('./routes/sellerRoutes');
 const genreRouter = require('./routes/genreRoutes');
 const discussionRouter = require('./routes/discussionRoutes');
 
 app.use('/api/books', bookRouter);
+app.use('/api/sellers', sellerRoutes);
 app.use('/api/users', userRouter);
 app.use('/api/ethereumUsers', ethereumUserRoute);
 app.use('/api/nonce', userRouter);

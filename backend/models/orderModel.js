@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
 const orderItemSchema = new mongoose.Schema({
   productId: {
@@ -10,9 +11,14 @@ const orderItemSchema = new mongoose.Schema({
   unitPriceMinor: { type: Number, required: true },
   quantity: { type: Number, default: 1 },
   seller: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    type: Schema.Types.ObjectId,
     required: true,
+    refPath: 'sellerModel',
+  },
+  sellerModel: {
+    type: String,
+    required: true,
+    enum: ['User', 'EthereumUser'],
   },
 });
 
