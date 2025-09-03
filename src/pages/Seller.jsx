@@ -6,6 +6,7 @@ import { Helmet } from 'react-helmet';
 import AddToCartButton from '../components/AddToCartButton';
 import SellerRating from '../components/SellerRating';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 export default function Seller() {
   const { id } = useParams();
@@ -14,6 +15,7 @@ export default function Seller() {
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation(['seller', 'book', 'bookDetails']);
   const { token } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function load() {
@@ -32,6 +34,10 @@ export default function Seller() {
 
   if (loading) return <p>{t('seller:loading')}</p>;
   if (!seller) return <p>{t('seller:notFound')}</p>;
+
+  const handleChat = () => {
+    navigate(`/messages/${seller._id}`);
+  };
 
   const displayName =
     seller.firstName && seller.lastName
@@ -55,7 +61,11 @@ export default function Seller() {
       <p>
         <strong>{t('seller:booksOffered')}:</strong> {seller.booksCount ?? 0}
       </p>
-
+      <div style={{ margin: '16px 0' }}>
+        <button onClick={handleChat} className='btn btn-primary'>
+          {t('seller:chatButton')}
+        </button>
+      </div>
       <h2 className='mt-5'>{t('book:heading')}</h2>
       <div className='row'>
         <div

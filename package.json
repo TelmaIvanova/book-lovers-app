@@ -9,6 +9,7 @@
     "bootstrap": "^5.3.3",
     "buffer": "^6.0.3",
     "cra-template": "1.2.0",
+    "dayjs": "^1.11.18",
     "ethers": "^6.14.1",
     "i18next": "^21.10.0",
     "nth-check": "^2.1.1",

@@ -35,6 +35,8 @@ import bgMyBooks from './locales/bg/myBooks.json';
 import enMyBooks from './locales/en/myBooks.json';
 import bgSeller from './locales/bg/seller.json';
 import enSeller from './locales/en/seller.json';
+import enMessages from './locales/en/messages.json';
+import bgMessages from './locales/bg/messages.json';
 
 i18n.use(initReactI18next).init({
   resources: {
@@ -56,6 +58,7 @@ i18n.use(initReactI18next).init({
       orders: enOrders,
       myBooks: enMyBooks,
       seller: enSeller,
+      messages: enMessages,
     },
     bg: {
       navbar: bgNavbar,
@@ -75,6 +78,7 @@ i18n.use(initReactI18next).init({
       orders: bgOrders,
       myBooks: bgMyBooks,
       seller: bgSeller,
+      messages: bgMessages,
     },
   },
   lng: localStorage.getItem('language') || 'bg',
@@ -98,6 +102,7 @@ i18n.use(initReactI18next).init({
     'orders',
     'myBooks',
     'seller',
+    'messages',
   ],
   interpolation: { escapeValue: false },
 });

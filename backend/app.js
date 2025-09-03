@@ -1,7 +1,5 @@
 const express = require('express');
-const mongoose = require('mongoose');
 require('dotenv').config({ path: '.env' });
-const CONNECTION = process.env.CONNECTION;
 const AppError = require('./utils/appError');
 const errorHandler = require('./controllers/errorController');
 const app = express();
@@ -14,11 +12,13 @@ const cartRoutes = require('./routes/cartRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const checkoutRoutes = require('./routes/checkoutRoutes');
 const sellerRoutes = require('./routes/sellerRoutes');
+const messageRoutes = require('./routes/messageRoutes');
 const genreRouter = require('./routes/genreRoutes');
 const discussionRouter = require('./routes/discussionRoutes');
 
 app.use('/api/books', bookRouter);
 app.use('/api/sellers', sellerRoutes);
+app.use('/api/messages', messageRoutes);
 app.use('/api/users', userRouter);
 app.use('/api/ethereumUsers', ethereumUserRoute);
 app.use('/api/nonce', userRouter);
@@ -37,13 +37,4 @@ app.all('*', (req, res, next) => {
 
 app.use(errorHandler);
 
-const start = async () => {
-  try {
-    await mongoose.connect(CONNECTION);
-  } catch (e) {
-    console.log(e.message);
-  }
-};
-
-start();
 module.exports = app;

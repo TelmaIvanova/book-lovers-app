@@ -10,6 +10,7 @@ import { AuthProvider } from './context/AuthContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { ToastProvider } from './components/ToastProvider';
+import { SocketProvider } from './context/SocketContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -17,7 +18,9 @@ root.render(
     <AuthProvider>
       <CartProvider>
         <ToastProvider>
-          <App />
+          <SocketProvider>
+            <App />
+          </SocketProvider>
         </ToastProvider>
       </CartProvider>
     </AuthProvider>

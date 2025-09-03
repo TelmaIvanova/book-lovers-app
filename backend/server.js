@@ -1,32 +1,70 @@
-const app = require('./app');
 const http = require('http');
 const { Server } = require('socket.io');
+const { createAndFormatMessage } = require('./utils/messageHelper');
+const mongoose = require('mongoose');
+require('dotenv').config({ path: '.env' });
+
+const app = require('./app');
+const CONNECTION = process.env.CONNECTION;
 
 const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
     origin: 'http://localhost:3000',
-    methods: ['GET', 'PATCH'],
+    methods: ['GET', 'POST'],
   },
 });
 
 io.on('connection', (socket) => {
-  console.log('A user connected');
+  console.log('User connected:', socket.id);
 
-  socket.on('rateBook', (data) => {
-    console.log('Book rated:', data);
-    io.emit('ratingUpdated', data);
+  socket.on('joinRoom', (roomId) => {
+    socket.join(roomId);
   });
+
+  socket.on(
+    'sendMessage',
+    async ({
+      roomId,
+      message,
+      sender,
+      senderModel,
+      receiver,
+      receiverModel,
+    }) => {
+      try {
+        const formatted = await createAndFormatMessage({
+          roomId,
+          sender,
+          receiver,
+          senderModel,
+          receiverModel,
+          text: message,
+        });
+
+        io.to(roomId).emit('receiveMessage', formatted);
+      } catch (err) {
+        console.error('Error saving message:', err);
+      }
+    }
+  );
 
   socket.on('disconnect', () => {
-    console.log('User disconnected');
+    console.log('User disconnected:', socket.id);
   });
 });
 
-app.set('io', io);
+const start = async () => {
+  try {
+    await mongoose.connect(CONNECTION);
+    console.log('MongoDB connected');
+    server.listen(5000, () => {
+      console.log('Server running on port 5000');
+    });
+  } catch (err) {
+    console.error(err.message);
+  }
+};
 
-const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+start();

@@ -17,6 +17,7 @@ import Orders from './pages/Orders';
 import OrderDetails from './pages/OrderDetails';
 import MyBooks from './pages/MyBooks';
 import Seller from './pages/Seller';
+import Messages from './pages/Messages';
 
 const App = () => (
   <>
@@ -34,6 +35,8 @@ const App = () => (
         <Route path='/orders' element={<Orders />} />
         <Route path='/sellers/:id' element={<Seller />} />
         <Route path='/orders/:id' element={<OrderDetails />} />
+        <Route path='/messages' element={<Messages />} />
+        <Route path='/messages/:otherUserId' element={<Messages />} />
         <Route path='/ethereumProfile' element={<EthereumProfile />} />
         <Route path='/users' element={<Users />} />
         <Route path='/users/:id' element={<UserDetails />} />

@@ -13,73 +13,14 @@ async function getOrCreateCart(userId) {
   return cart;
 }
 
-// exports.checkoutPhysical = catchAsync(async (req, res, next) => {
-//   const cart = await getOrCreateCart(req.userId);
-
-//   await cart.populate({
-//     path: 'items.productId',
-//     select: 'type seller sellerModel title unitPriceMinor',
-//     populate: { path: 'seller', select: 'firstName lastName' },
-//   });
-
-//   const physicalItems = cart.items.filter(
-//     (it) => it.productId && it.productId.type === 'OnPaper'
-//   );
-
-//   if (physicalItems.length === 0) {
-//     return res.status(400).json({ message: 'No items in cart' });
-//   }
-//   console.log(
-//     '>>> ORDER ITEMS DEBUG',
-//     physicalItems.map((it) => ({
-//       seller: it.productId.seller,
-//       sellerModel: it.productId.sellerModel,
-//     }))
-//   );
-
-//   const order = await Order.create({
-//     userId: req.userId,
-//     type: 'OnPaper',
-//     items: physicalItems.map((it) => ({
-//       productId: it.productId._id,
-//       title: it.title,
-//       unitPriceMinor: it.unitPriceMinor,
-//       quantity: it.quantity || 1,
-//       seller: it.productId.seller,
-//       sellerModel: it.productId.sellerModel,
-//     })),
-//     paymentInfo: {
-//       method: 'cash',
-//       amountMinor: physicalItems.reduce(
-//         (sum, it) => sum + it.unitPriceMinor * (it.quantity || 1),
-//         0
-//       ),
-//     },
-//   });
-
-//   cart.items = cart.items.filter(
-//     (it) => it.productId && it.productId.type !== 'OnPaper'
-//   );
-//   cart.updatedAt = new Date();
-//   await cart.save();
-
-//   res.status(201).json({
-//     message: 'Order created',
-//     orderId: order._id,
-//     status: order.status,
-//     remainingItems: cart.items,
-//   });
-// });
 exports.checkoutPhysical = catchAsync(async (req, res, next) => {
-  const cart = await getOrCreateCart(req.userId);
+  const cart = await getOrCreateCart(req.user.id);
 
   await cart.populate({
     path: 'items.productId',
     select: 'type seller sellerModel title unitPriceMinor',
     populate: {
       path: 'seller',
-      seller: it.productId.seller,
-      sellerModel: it.productId.sellerModel,
       select: 'firstName lastName username ethereumAddress',
     },
   });
@@ -93,15 +34,15 @@ exports.checkoutPhysical = catchAsync(async (req, res, next) => {
   }
 
   const order = await Order.create({
-    userId: req.userId,
+    userId: req.user.id,
     type: 'OnPaper',
     items: physicalItems.map((it) => ({
       productId: it.productId._id,
       title: it.title,
       unitPriceMinor: it.unitPriceMinor,
       quantity: it.quantity || 1,
-      seller: it.productId.seller, 
-      sellerModel: it.productId.sellerModel, 
+      seller: it.productId.seller?._id,
+      sellerModel: it.productId.sellerModel || 'User',
     })),
     paymentInfo: {
       method: 'cash',
@@ -196,7 +137,7 @@ exports.checkoutEbooks = catchAsync(async (req, res, next) => {
   );
 
   const order = await Order.create({
-    userId: req.userId,
+    userId: req.user.id,
     type: 'E-book',
     items: ebookItems.map((it) => ({
       productId: it.productId._id,
@@ -222,79 +163,3 @@ exports.checkoutEbooks = catchAsync(async (req, res, next) => {
     status: order.status,
   });
 });
-
-// exports.checkoutEbooks = catchAsync(async (req, res, next) => {
-//   const { txHash, amountETH, rateUsed } = req.body;
-//   if (!txHash) {
-//     return res.status(400).json({ message: 'Transaction hash required' });
-//   }
-
-//   let cart = await getOrCreateCart(req.userId);
-//   cart = await cart.populate({
-//     path: 'items.productId',
-//     populate: {
-//       path: 'seller',
-//       select: 'firstName lastName username ethereumAddress',
-//     },
-//   });
-
-//   const ebookItems = cart.items.filter((it) => it.productId?.type === 'E-book');
-//   if (ebookItems.length === 0) {
-//     return res.status(400).json({ message: 'No ebooks in cart' });
-//   }
-
-//   let txReceipt;
-//   try {
-//     txReceipt = await provider.getTransactionReceipt(txHash);
-//   } catch (err) {
-//     console.error('Provider error:', err);
-//     return res.status(500).json({ message: 'Ethereum provider not available' });
-//   }
-
-//   if (!txReceipt) {
-//     return res
-//       .status(400)
-//       .json({ message: 'Transaction not found or still pending' });
-//   }
-
-//   const status = txReceipt.status === 1 ? 'paid' : 'failed';
-
-//   const totalMinor = ebookItems.reduce(
-//     (sum, it) => sum + it.unitPriceMinor * (it.quantity || 1),
-//     0
-//   );
-
-//   const order = await Order.create({
-//     userId: req.userId,
-//     type: 'E-book',
-//     items: ebookItems.map((it) => ({
-//       productId: it.productId._id,
-//       title: it.title,
-//       unitPriceMinor: it.unitPriceMinor,
-//       quantity: it.quantity || 1,
-//       seller: it.productId.seller._id,
-//       sellerModel: it.productId.sellerModel,
-//     })),
-//     paymentInfo: {
-//       method: 'eth',
-//       txHash,
-//       amountMinor: totalMinor,
-//       amountEth: amountETH,
-//       rateUsed,
-//     },
-//     status,
-//   });
-
-//   if (status === 'paid') {
-//     cart.items = cart.items.filter((it) => it.productId.type !== 'E-book');
-//     cart.updatedAt = new Date();
-//     await cart.save();
-//   }
-
-//   res.status(201).json({
-//     message: 'Ebook checkout processed',
-//     orderId: order._id,
-//     status: order.status,
-//     remainingItems: cart.items,
-//   });
-// });

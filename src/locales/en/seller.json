@@ -7,5 +7,6 @@
   "user": "user",
   "votes": "votes",
   "thanks": "Thanks for rating!",
-  "empty": "No ratings yet. Be the first to rate!"
+  "empty": "No ratings yet. Be the first to rate!",
+  "chatButton": "Message"
 }

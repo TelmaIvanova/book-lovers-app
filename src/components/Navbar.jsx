@@ -97,6 +97,15 @@ const Navbar = () => {
                 <li className='nav-item'>
                   <Link
                     className='nav-link'
+                    to='/messages'
+                    onClick={() => setIsOpen(false)}
+                  >
+                    {t('messages')}
+                  </Link>
+                </li>
+                <li className='nav-item'>
+                  <Link
+                    className='nav-link'
                     to='/books/my-books'
                     onClick={() => setIsOpen(false)}
                   >
