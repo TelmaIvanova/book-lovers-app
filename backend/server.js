@@ -11,7 +11,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:3000',
+    origin: process.env.CLIENT_URL,
     methods: ['GET', 'POST'],
   },
 });
@@ -59,8 +59,8 @@ const start = async () => {
   try {
     await mongoose.connect(CONNECTION);
     console.log('MongoDB connected');
-    server.listen(5000, () => {
-      console.log('Server running on port 5000');
+    server.listen(process.env.PORT, () => {
+      console.log(`Server running on port ${process.env.PORT}`);
     });
   } catch (err) {
     console.error(err.message);

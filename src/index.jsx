@@ -11,6 +11,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { ToastProvider } from './components/ToastProvider';
 import { SocketProvider } from './context/SocketContext';
+import { EthereumProvider } from './context/EthereumContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -19,7 +20,9 @@ root.render(
       <CartProvider>
         <ToastProvider>
           <SocketProvider>
-            <App />
+            <EthereumProvider>
+              <App />
+            </EthereumProvider>
           </SocketProvider>
         </ToastProvider>
       </CartProvider>

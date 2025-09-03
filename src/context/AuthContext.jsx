@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { BrowserProvider } from 'ethers';
 import { SiweMessage } from 'siwe';
 
@@ -7,9 +7,17 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('token') || null);
   const [user, setUser] = useState(null);
-  const provider = new BrowserProvider(window.ethereum);
+  const [isMetaMaskAvailable, setIsMetaMaskAvailable] = useState(false);
   const domain = window.location.host;
   let [address, setAddress] = useState('');
+  const provider = useMemo(() => {
+    if (typeof window !== 'undefined' && window.ethereum) {
+      setIsMetaMaskAvailable(true);
+      return new BrowserProvider(window.ethereum);
+    }
+    setIsMetaMaskAvailable(false);
+    return null;
+  }, []);
 
   useEffect(() => {
     if (!token) {
@@ -70,11 +78,16 @@ export const AuthProvider = ({ children }) => {
   };
 
   const connectWallet = async () => {
+    if (!provider) {
+      alert('MetaMask not available');
+      return;
+    }
+
     const accounts = await provider
       .send('eth_requestAccounts', [])
       .catch(() => console.log('User rejected request'));
 
-    if (accounts[0]) {
+    if (accounts && accounts[0]) {
       setAddress(accounts[0]);
     }
   };
@@ -82,6 +95,10 @@ export const AuthProvider = ({ children }) => {
   const loginWithEthereum = async () => {
     const signer = await provider.getSigner();
     const network = await provider.getNetwork();
+    if (!provider) {
+      alert('MetaMask not available');
+      return;
+    }
 
     // Get nonce and nonceToken from backend
     const res = await fetch('/api/ethereumUsers/nonce');
@@ -98,7 +115,7 @@ export const AuthProvider = ({ children }) => {
       statement: 'Sign in with Ethereum to the app.',
       uri: window.location.origin,
       version: '1',
-      chainId: network.chainId, //MetaMask selects 1 which is for Mainnet
+      chainId: network.chainId,
       nonce,
     });
 
@@ -259,6 +276,7 @@ export const AuthProvider = ({ children }) => {
         deleteBook,
         voteBook,
         isAuthenticated: !!token,
+        isMetaMaskAvailable,
       }}
     >
       {children}

@@ -3,7 +3,10 @@ import { ethers } from 'ethers';
 export default function PayWithEthereum({ token, navigate, children }) {
   async function handlePayWithEth() {
     try {
-      if (!window.ethereum) throw new Error('No wallet');
+      if (typeof window === 'undefined' || !window.ethereum) {
+        alert('MetaMask is not installed. Please install it to continue.');
+        return;
+      }
 
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();

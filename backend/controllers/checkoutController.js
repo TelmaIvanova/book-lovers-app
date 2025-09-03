@@ -1,11 +1,7 @@
-const { ethers } = require('ethers');
 const Cart = require('../models/cartModel');
 const catchAsync = require('./../utils/catchAsync');
 const Order = require('../models/orderModel');
-const { User } = require('../models/userModel');
 const fetch = require('node-fetch');
-
-const provider = new ethers.JsonRpcProvider(process.env.ETH_RPC_URL);
 
 async function getOrCreateCart(userId) {
   let cart = await Cart.findOne({ userId });
