@@ -1,5 +1,7 @@
+import apiBase from '../config/api';
+
 export async function apiGetCart(token) {
-  const res = await fetch('/api/cart', {
+  const res = await fetch(`${apiBase}/cart`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   if (!res.ok) throw new Error('Failed to load cart');
@@ -11,11 +13,11 @@ export async function apiGetCart(token) {
     subtotal: data.subtotal,
     shipping: data.shipping,
     total: data.total,
-  }
+  };
 }
 
 export async function apiAddItem(token, payload) {
-  const res = await fetch('/api/cart/items', {
+  const res = await fetch(`${apiBase}/cart/items`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -35,7 +37,7 @@ export async function apiAddItem(token, payload) {
 }
 
 export async function apiRemoveItem(token, itemId) {
-  const res = await fetch(`/api/cart/items/${itemId}`, {
+  const res = await fetch(`${apiBase}/cart/items/${itemId}`, {
     method: 'DELETE',
     headers: { Authorization: `Bearer ${token}` },
   });
@@ -53,7 +55,7 @@ export async function apiCheckoutPhysical(token) {
 }
 
 export async function apiCheckoutEbooks(token, txHash) {
-  const res = await fetch('/api/checkout/ebooks', {
+  const res = await fetch(`${apiBase}/checkout/ebooks`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

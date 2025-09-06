@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
+import apiBase from '../config/api';
 
 const EthereumProfile = () => {
   const { t } = useTranslation('ethereumProfile');
@@ -21,7 +22,7 @@ const EthereumProfile = () => {
   useEffect(() => {
     const fetchMe = async () => {
       try {
-        const res = await fetch('/api/ethereumUsers/ethereumProfile', {
+        const res = await fetch(`${apiBase}/ethereumUsers/ethereumProfile`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -54,7 +55,7 @@ const EthereumProfile = () => {
 
   const handleBlur = async (field) => {
     try {
-      const res = await fetch('/api/ethereumUsers/ethereumProfile', {
+      const res = await fetch(`${apiBase}/ethereumUsers/ethereumProfile`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

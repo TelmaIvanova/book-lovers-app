@@ -1,6 +1,5 @@
 const Discussion = require('./../models/discussionModel');
-const APIFeatures = require('./../utils/APIFeatures');
-const features = require('./../utils/APIFeatures');
+const APIFeatures = require('./../utils/apiFeatures');
 const catchAsync = require('./../utils/catchAsync');
 
 exports.getAllDiscussions = catchAsync(async (req, res) => {

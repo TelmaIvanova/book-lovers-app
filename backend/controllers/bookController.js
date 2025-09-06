@@ -1,6 +1,6 @@
 const Book = require('./../models/bookModel');
 const { User, EthereumUser } = require('../models/userModel');
-const APIFeatures = require('./../utils/APIFeatures');
+const APIFeatures = require('./../utils/apiFeatures');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 const multer = require('multer');

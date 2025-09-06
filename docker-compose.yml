@@ -1,0 +1,30 @@
+version: '3.9'
+name: book-lovers
+
+services:
+  frontend:
+    container_name: book-lovers-frontend
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        API_URL: 'http://localhost:5000/api'
+        SOCKET: 'http://localhost:5000'
+    ports:
+      - '3000:80'
+    depends_on:
+      - book-lovers-backend
+    restart: unless-stopped
+
+  backend:
+    container_name: book-lovers-backend
+    build:
+      context: ./backend/
+      dockerfile: Dockerfile
+    ports:
+      - '5000:80'
+    environment:
+      CONNECTION: 'mongodb://Cluster47375:PkV3nvrG3I78Dzav@cluster47375-shard-00-00.gytdm.mongodb.net:27017,cluster47375-shard-00-01.gytdm.mongodb.net:27017,cluster47375-shard-00-02.gytdm.mongodb.net:27017/book-lovers?ssl=true&replicaSet=atlas-c7ov0f-shard-0&authSource=admin&retryWrites=true&w=majority'
+      CLIENT_URL: 'http://localhost:3000'
+      JWT_SECRET: 'devsecret'
+    restart: unless-stopped

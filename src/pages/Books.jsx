@@ -4,13 +4,14 @@ import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
 import AddToCartButton from '../components/AddToCartButton';
 import { useAuth } from '../context/AuthContext';
+import apiBase from '../config/api';
 
 const Books = () => {
   const { t } = useTranslation(['book', 'bookDetails']);
   const [books, setBooks] = useState([]);
   const { token } = useAuth();
   useEffect(() => {
-    fetch('/api/books', {
+    fetch(`${apiBase}/books`, {
       headers: token ? { Authorization: `Bearer ${token}` } : {},
     })
       .then((response) => response.json())

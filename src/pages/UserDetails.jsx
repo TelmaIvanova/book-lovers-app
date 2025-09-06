@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
+import apiBase from '../config/api';
 
 const UserDetails = () => {
   const { t } = useTranslation('userDetails');
@@ -25,7 +26,7 @@ const UserDetails = () => {
       return;
     }
 
-    fetch(`/api/users/${id}`, {
+    fetch(`${apiBase}/users/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
         'User-Role': currentUser?.role,
@@ -54,7 +55,7 @@ const UserDetails = () => {
   const handleBlur = (field, value) => {
     setEditedUser((prev) => ({ ...prev, [field]: value }));
 
-    fetch(`/api/users/profile`, {
+    fetch(`${apiBase}/users/profile`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -76,7 +77,7 @@ const UserDetails = () => {
   const handleDelete = () => {
     const confirmation = window.confirm(t('confirm.delete'));
     if (confirmation) {
-      fetch(`/api/users/delete/${id}`, {
+      fetch(`${apiBase}/users/delete/${id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -105,7 +106,7 @@ const UserDetails = () => {
       id: currentUser?.id,
     });
 
-    fetch(`/api/users/changePassword/${id}`, {
+    fetch(`${apiBase}/users/changePassword/${id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',

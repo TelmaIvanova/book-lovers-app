@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';
+import apiBase from '../config/api';
 
 export default function MyOrders() {
   const { token } = useAuth();
@@ -12,7 +13,7 @@ export default function MyOrders() {
   useEffect(() => {
     async function fetchOrders() {
       try {
-        const res = await fetch('/api/orders', {
+        const res = await fetch(`${apiBase}/orders`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error('Failed to load orders');

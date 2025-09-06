@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';
+import apiBase from '../config/api';
 
 export default function OrderDetails() {
   const { id } = useParams();
@@ -14,7 +15,7 @@ export default function OrderDetails() {
   useEffect(() => {
     async function fetchOrder() {
       try {
-        const res = await fetch(`/api/orders/${id}`, {
+        const res = await fetch(`${apiBase}/orders/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error('Failed to load order');

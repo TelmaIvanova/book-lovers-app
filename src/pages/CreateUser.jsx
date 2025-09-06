@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
+import apiBase from '../config/api';
 
 const CreateUser = () => {
   const { t } = useTranslation('createUser');
@@ -29,7 +30,7 @@ const CreateUser = () => {
     const requestData = { ...formData, passwordConfirm: formData.password };
 
     try {
-      const res = await fetch('/api/users/create', {
+      const res = await fetch(`${apiBase}/users/create`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

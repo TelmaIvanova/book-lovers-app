@@ -1,9 +1,19 @@
 const express = require('express');
+const cors = require('cors');
+
 require('dotenv').config({ path: '.env' });
 const AppError = require('./utils/appError');
 const errorHandler = require('./controllers/errorController');
 const app = express();
 app.use(express.json());
+
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || 'http://localhost:3000',
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    credentials: true,
+  })
+);
 
 const bookRouter = require('./routes/bookRoutes');
 const userRouter = require('./routes/userRoutes');

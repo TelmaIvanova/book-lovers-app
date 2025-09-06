@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { BrowserProvider } from 'ethers';
 import { SiweMessage } from 'siwe';
+import apiBase from '../config/api';
 
 const AuthContext = createContext();
 
@@ -34,7 +35,7 @@ export const AuthProvider = ({ children }) => {
         const userType = localStorage.getItem('userType');
 
         if (userType === 'regular') {
-          const res = await fetch('/api/users/profile', { headers });
+          const res = await fetch(`${apiBase}/users/profile`, { headers });
           if (!res.ok) throw new Error('Failed regular profile');
           const data = await res.json();
           setUser(data.data.user);
@@ -42,7 +43,7 @@ export const AuthProvider = ({ children }) => {
         }
 
         if (userType === 'ethereum') {
-          const res = await fetch('/api/ethereumUsers/ethereumProfile', {
+          const res = await fetch(`${apiBase}/ethereumUsers/ethereumProfile`, {
             headers,
           });
           if (!res.ok) throw new Error('Failed eth profile');
@@ -61,7 +62,7 @@ export const AuthProvider = ({ children }) => {
   }, [token]);
 
   const login = async (email, password) => {
-    const response = await fetch('/api/users/login', {
+    const response = await fetch(`${apiBase}/users/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
@@ -101,7 +102,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     // Get nonce and nonceToken from backend
-    const res = await fetch('/api/ethereumUsers/nonce');
+    const res = await fetch(`${apiBase}/ethereumUsers/nonce`);
     if (!res.ok) throw new Error('Failed to fetch nonce');
     const { nonce, nonceToken } = await res.json();
 
@@ -125,7 +126,7 @@ export const AuthProvider = ({ children }) => {
     const signature = await signer.signMessage(message);
 
     // Send message, signature and nonceToken to server
-    const res2 = await fetch('/api/ethereumUsers/verify', {
+    const res2 = await fetch(`${apiBase}/ethereumUsers/verify`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -149,7 +150,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (formData) => {
     try {
-      const res = await fetch('/api/users/signup', {
+      const res = await fetch(`${apiBase}/users/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -176,7 +177,7 @@ export const AuthProvider = ({ children }) => {
 
   const deleteAccount = async (password) => {
     try {
-      const response = await fetch('/api/users/deleteAccount', {
+      const response = await fetch(`${apiBase}/users/deleteAccount`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -199,7 +200,7 @@ export const AuthProvider = ({ children }) => {
 
   const updateBook = async (id, updatedData) => {
     try {
-      const res = await fetch(`/api/books/${id}`, {
+      const res = await fetch(`${apiBase}/books/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -219,7 +220,7 @@ export const AuthProvider = ({ children }) => {
 
   const deleteBook = async (id) => {
     try {
-      const res = await fetch(`/api/books/${id}`, {
+      const res = await fetch(`${apiBase}/books/${id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -242,7 +243,7 @@ export const AuthProvider = ({ children }) => {
 
   const voteBook = async (id, rating, token) => {
     try {
-      const res = await fetch(`/api/books/${id}/vote`, {
+      const res = await fetch(`${apiBase}/books/${id}/vote`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
 import { useAuth } from '../context/AuthContext';
+import apiBase from '../config/api';
 
 const MyBooks = () => {
   const { t } = useTranslation(['myBooks']);
@@ -14,7 +15,7 @@ const MyBooks = () => {
 
     const fetchMyBooks = async () => {
       try {
-        const res = await fetch('/api/books/my-books', {
+        const res = await fetch(`${apiBase}/books/my-books`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

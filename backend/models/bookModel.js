@@ -42,12 +42,12 @@ const bookSchema = new mongoose.Schema({
     type: String,
     required: [true, 'A book must contain an ISBN!'],
     trim: true,
-    // validate: {
-    //   validator: function (val) {
-    //     return validator.isISBN(val);
-    //   },
-    //   message: 'A book must contain valid ISBN!',
-    // },
+    validate: {
+      validator: function (val) {
+        return validator.isISBN(val);
+      },
+      message: 'A book must contain valid ISBN!',
+    },
   },
   publishedYear: {
     type: Number,

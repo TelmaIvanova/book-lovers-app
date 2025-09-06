@@ -1,6 +1,6 @@
 const { EthereumUser } = require('./../models/userModel');
 const catchAsync = require('../utils/catchAsync');
-const APIFeatures = require('./../utils/APIFeatures');
+const APIFeatures = require('./../utils/apiFeatures');
 
 exports.getAllEthereumUsers = catchAsync(async (req, res, next) => {
   const features = new APIFeatures(EthereumUser.find(), req.query)

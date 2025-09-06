@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
+import apiBase from '../config/api';
 
 const AddBook = () => {
   const { t } = useTranslation('addBook');
@@ -80,7 +81,7 @@ const AddBook = () => {
     formData.append('summary', summary);
     formData.append('comment', comment);
     appendPriceToFormData(formData, price, user.userType);
-    const res = await fetch('/api/books', {
+    const res = await fetch(`${apiBase}/books`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,

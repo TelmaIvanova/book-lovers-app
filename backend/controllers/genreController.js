@@ -1,5 +1,5 @@
-const Genre = require('./../models/GenreModel');
-const APIFeatures = require('./../utils/APIFeatures');
+const Genre = require('./../models/genreModel');
+const APIFeatures = require('./../utils/apiFeatures');
 const catchAsync = require('./../utils/catchAsync');
 
 exports.getAllGenres = catchAsync(async (req, res) => {

@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import apiBase from '../config/api';
 
 export default function PayWithEthereum({ token, navigate, children }) {
   async function handlePayWithEth() {
@@ -11,7 +12,7 @@ export default function PayWithEthereum({ token, navigate, children }) {
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
 
-      const prep = await fetch('/api/checkout/prepare', {
+      const prep = await fetch(`${apiBase}/checkout/prepare`, {
         headers: { Authorization: `Bearer ${token}` },
       }).then((r) => r.json());
 
@@ -22,7 +23,7 @@ export default function PayWithEthereum({ token, navigate, children }) {
         value: amountWei,
       });
 
-      const result = await fetch('/api/checkout/ebooks', {
+      const result = await fetch(`${apiBase}/checkout/ebooks`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

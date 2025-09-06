@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
+import apiBase from '../config/api';
 
 const Users = () => {
   const { t } = useTranslation('users');
@@ -15,7 +16,7 @@ const Users = () => {
       return;
     }
 
-    fetch('/api/users', {
+    fetch(`${apiBase}/users`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

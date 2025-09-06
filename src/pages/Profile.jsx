@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
+import apiBase from '../config/api';
 
 const Profile = () => {
   const { t } = useTranslation('profile');
@@ -20,7 +21,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchMe = async () => {
       try {
-        const res = await fetch('/api/users/profile', {
+        const res = await fetch(`${apiBase}/users/profile`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -53,7 +54,7 @@ const Profile = () => {
 
   const handleBlur = async (field) => {
     try {
-      const res = await fetch('/api/users/profile', {
+      const res = await fetch(`${apiBase}/users/profile`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -82,7 +83,7 @@ const Profile = () => {
     }
 
     try {
-      const response = await fetch('/api/users/updatePassword', {
+      const response = await fetch(`${apiBase}/users/updatePassword`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

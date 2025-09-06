@@ -1,7 +1,7 @@
 const { User } = require('./../models/userModel');
 const Book = require('./../models/bookModel');
 const catchAsync = require('../utils/catchAsync');
-const APIFeatures = require('./../utils/APIFeatures');
+const APIFeatures = require('./../utils/apiFeatures');
 const AppError = require('./../utils/appError');
 
 exports.getAllUsers = catchAsync(async (req, res, next) => {

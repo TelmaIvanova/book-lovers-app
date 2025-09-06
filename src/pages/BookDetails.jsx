@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
 import AddToCartButton from '../components/AddToCartButton';
+import apiBase from '../config/api';
 
 const BookDetails = () => {
   const { t } = useTranslation('bookDetails');
@@ -18,7 +19,7 @@ const BookDetails = () => {
   useEffect(() => {
     const fetchBook = async () => {
       try {
-        const res = await fetch(`/api/books/${id}`, {
+        const res = await fetch(`${apiBase}/books/${id}`, {
           headers: {
             'Content-Type': 'application/json',
           },
@@ -29,7 +30,7 @@ const BookDetails = () => {
         setFormData(data.data.book);
         try {
           const sellerRes = await fetch(
-            `/api/sellers/${data.data.book.seller}`
+            `${apiBase}/sellers/${data.data.book.seller}`
           );
           if (sellerRes.ok) {
             const sellerData = await sellerRes.json();
@@ -143,7 +144,7 @@ const BookDetails = () => {
               const form = new FormData();
               form.append('coverImage', file);
 
-              const res = await fetch(`/api/books/${id}`, {
+              const res = await fetch(`${apiBase}/books/${id}`, {
                 method: 'PATCH',
                 headers: {
                   Authorization: `Bearer ${token}`,

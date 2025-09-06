@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
 import dayjs from 'dayjs';
+import apiBase from '../config/api';
 
 export default function MessagesPage() {
   const { otherUserId } = useParams();
@@ -24,7 +25,7 @@ export default function MessagesPage() {
   useEffect(() => {
     const fetchConversations = async () => {
       try {
-        const res = await fetch('/api/messages/conversations', {
+        const res = await fetch(`${apiBase}/messages/conversations`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -41,7 +42,7 @@ export default function MessagesPage() {
 
     const fetchMessages = async () => {
       try {
-        const res = await fetch(`/api/messages/${roomId}`, {
+        const res = await fetch(`${apiBase}/messages/${roomId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();

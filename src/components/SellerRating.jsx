@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import apiBase from '../config/api';
 
 const SellerRating = ({ sellerId, token }) => {
   const { t } = useTranslation('seller');
@@ -15,7 +16,7 @@ const SellerRating = ({ sellerId, token }) => {
   useEffect(() => {
     const fetchSeller = async () => {
       try {
-        const res = await fetch(`/api/sellers/${sellerId}`, {
+        const res = await fetch(`${apiBase}/sellers/${sellerId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -39,7 +40,7 @@ const SellerRating = ({ sellerId, token }) => {
     if (hasVoted) return;
 
     try {
-      const res = await fetch(`/api/sellers/${sellerId}/rate`, {
+      const res = await fetch(`${apiBase}/sellers/${sellerId}/rate`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
