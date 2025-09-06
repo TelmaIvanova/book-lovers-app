@@ -1,4 +1,3 @@
-version: '3.9'
 name: book-lovers
 
 services:
@@ -13,7 +12,7 @@ services:
     ports:
       - '3000:80'
     depends_on:
-      - book-lovers-backend
+      - backend
     restart: unless-stopped
 
   backend:
@@ -24,7 +23,7 @@ services:
     ports:
       - '5000:80'
     environment:
-      CONNECTION: 'mongodb://Cluster47375:PkV3nvrG3I78Dzav@cluster47375-shard-00-00.gytdm.mongodb.net:27017,cluster47375-shard-00-01.gytdm.mongodb.net:27017,cluster47375-shard-00-02.gytdm.mongodb.net:27017/book-lovers?ssl=true&replicaSet=atlas-c7ov0f-shard-0&authSource=admin&retryWrites=true&w=majority'
+      CONNECTION: ${CONNECTION}
+      JWT_SECRET: ${JWT_SECRET}
       CLIENT_URL: 'http://localhost:3000'
-      JWT_SECRET: 'devsecret'
     restart: unless-stopped
