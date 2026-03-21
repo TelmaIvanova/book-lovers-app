@@ -70,3 +70,6 @@ This means that when the frontend (running on port 3000) calls routes like `/api
 the requests are automatically forwarded to the backend (running on port 5000).
 
 **Important:** When you deploy the project on a different server or domain, you must update the "proxy" field in client/package.json to point to the correct backend URL.
+
+## License
+This project is proprietary. All rights reserved.
