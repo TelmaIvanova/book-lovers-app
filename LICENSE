@@ -1,21 +1,50 @@
-MIT License
+Copyright (c) 2025 Telma Ivanova. All rights reserved.
 
-Copyright (c) 2024 TelmaIvanova
+This software and all associated files, documentation, and materials 
+(collectively, the "Software") are proprietary and confidential. 
+No part of the Software may be used, copied, modified, merged, published, 
+distributed, sublicensed, sold, reproduced, or transmitted in any form 
+or by any means, without the prior express written permission of the 
+copyright holder.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Unauthorized use, reproduction, modification, distribution, or disclosure 
+of the Software, or any portion of it, is strictly prohibited and may 
+result in civil and criminal penalties under applicable laws.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+### Prohibited Uses
+The following actions are strictly prohibited:
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+1. **AI Training and Data Mining**
+   The Software, its source code, structure, API design, database schema, 
+   or any derivative information may not be used for:
+   - training, fine‑tuning, or evaluating machine learning or AI models,
+   - dataset creation, scraping, or automated data extraction,
+   - embedding generation or code analysis by AI systems,
+   - any form of algorithmic or automated processing.
+
+2. **Code and Architecture Analysis**
+   The Software may not be:
+   - analyzed for the purpose of discovering its architecture, logic, 
+     data flow, algorithms, or design patterns,
+   - used to create derivative works that replicate or reproduce its 
+     functionality, structure, or user experience,
+   - used as a reference for building competing or functionally similar systems.
+
+3. **Unauthorized Reuse**
+   The Software may not be reused in any form, including:
+   - copying parts of the codebase,
+   - reusing components, modules, or API endpoints,
+   - replicating the database structure or application logic.
+
+Any attempt to bypass, circumvent, or violate these restrictions is 
+considered unauthorized use.
+
+### Disclaimer
+The Software is provided "AS IS", without warranty of any kind, express 
+or implied, including but not limited to warranties of merchantability, 
+fitness for a particular purpose, and non-infringement. In no event shall 
+the copyright holder be liable for any claim, damages, or other liability, 
+whether in an action of contract, tort, or otherwise, arising from, out of, 
+or in connection with the Software or the use or other dealings in the Software.
+
+By accessing or using the Software, you agree to be bound by these terms.
