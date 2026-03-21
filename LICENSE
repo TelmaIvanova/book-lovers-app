@@ -11,10 +11,10 @@ Unauthorized use, reproduction, modification, distribution, or disclosure
 of the Software, or any portion of it, is strictly prohibited and may 
 result in civil and criminal penalties under applicable laws.
 
-### Prohibited Uses
+Prohibited Uses
 The following actions are strictly prohibited:
 
-1. **AI Training and Data Mining**
+1. AI Training and Data Mining
    The Software, its source code, structure, API design, database schema, 
    or any derivative information may not be used for:
    - training, fine‑tuning, or evaluating machine learning or AI models,
@@ -22,7 +22,7 @@ The following actions are strictly prohibited:
    - embedding generation or code analysis by AI systems,
    - any form of algorithmic or automated processing.
 
-2. **Code and Architecture Analysis**
+2. Code and Architecture Analysis
    The Software may not be:
    - analyzed for the purpose of discovering its architecture, logic, 
      data flow, algorithms, or design patterns,
@@ -30,7 +30,7 @@ The following actions are strictly prohibited:
      functionality, structure, or user experience,
    - used as a reference for building competing or functionally similar systems.
 
-3. **Unauthorized Reuse**
+3. Unauthorized Reuse
    The Software may not be reused in any form, including:
    - copying parts of the codebase,
    - reusing components, modules, or API endpoints,
@@ -39,7 +39,7 @@ The following actions are strictly prohibited:
 Any attempt to bypass, circumvent, or violate these restrictions is 
 considered unauthorized use.
 
-### Disclaimer
+Disclaimer
 The Software is provided "AS IS", without warranty of any kind, express 
 or implied, including but not limited to warranties of merchantability, 
 fitness for a particular purpose, and non-infringement. In no event shall 
